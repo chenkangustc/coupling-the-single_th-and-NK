@@ -5,7 +5,7 @@
 	<Configurations>
 		<Configuration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories="E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\mathlib\include;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\xmlfox\include;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\hdf5\include;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\lapack\include;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\refprop\include" OpenMP="OpenMPParallelCode" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\mathlib\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\xmlfox\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\hdf5\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\lapack\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\refprop\lib" IgnoreDefaultLibraryNames="debug--MSVCRT.lib;" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="100000000" AdditionalDependencies="mathlib.lib refprop.lib blas.lib lapack.lib fox_common.lib fox_dom.lib fox_fsys.lib fox_sax.lib fox_utils.lib fox_wxml.lib hdf5.lib hdf5_fortran.lib hdf5_hl.lib hdf5_hl_fortran.lib"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\mathlib\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\xmlfox\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\hdf5\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\lapack\lib;E:\documents\doctors degree\software\tansistant\NT\DAISY_verson_20170328\DAISY-git\git\lib-32bit\refprop\lib" IgnoreDefaultLibraryNames="MSVCRT.lib;" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="100000000" AdditionalDependencies="mathlib.lib refprop.lib blas.lib lapack.lib fox_common.lib fox_dom.lib fox_fsys.lib fox_sax.lib fox_utils.lib fox_wxml.lib hdf5.lib hdf5_fortran.lib hdf5_hl.lib hdf5_hl_fortran.lib"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -87,20 +87,20 @@
 		<File RelativePath="..\..\..\git\src\header\worth_header.f90"/>
 		<File RelativePath="..\..\..\git\src\header\xesm_header.f90"/></Filter>
 		<Filter Name="IMPC">
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_assembly_header.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_assm_global.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_assm_header.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_driving_cal_transient.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_driving_output.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_driving_pre_process.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_mathkerel.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_power_header.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_property_header.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_re_input_global.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_re_input_header.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_th_interface.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\IMP_timer.f90"/>
-		<File RelativePath="..\..\..\git\src\IMPC\TH2NK_interface_IMP.f90"/></Filter>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assembly_header.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assm_global.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assm_header.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_driving_output.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_driving_pre_process.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_mathkerel.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_power_header.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_property_header.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_re_input_global.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_re_input_header.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_single_channel.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_single_kernel.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_timer.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\TH2NK_interface_IMP.f90"/></Filter>
 		<Filter Name="inout">
 		<File RelativePath="..\..\..\git\src\inout\hdf5_interface.f90"/>
 		<File RelativePath="..\..\..\git\src\inout\input_driver.f90"/>

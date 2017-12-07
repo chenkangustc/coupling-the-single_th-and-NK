@@ -21,6 +21,7 @@ module feedback
     use stastics
     use input_xsec,                 only : read_xsec_unknown, read_xsec_LRA
     use TH2NK_interface_self,       only : Perform_TH_self
+    !use TH2NK_interface_imp,        only : Perform_TH_imp
     
     implicit none 
     private
@@ -84,8 +85,19 @@ contains
             end select
         end if
         
-        if (ns%feedback%is_inner)  then
-            call Perform_TH_self(transient_flag, power, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)
+        !if (ns%feedback%is_inner)  then
+        !    call Perform_TH_self(transient_flag, power, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)
+        !    call self_fdbk%update (geom, Tfuel, Tcoolant, Rhocoolant, hot_Tf=max_Tfuel, hot_Tm=max_Tcoolant, hot_Rho_m=min_Rhocoolant, out_Tm=toutlet, mask=mat_info%mask_core)
+        !    call self_fdbk%check (is_pass, .FALSE.)
+        !    call self_fdbk%relax ()
+        !    call read_xsec_unknown (self_fdbk, self_link, mat_info, xsec, param, cr_bank, iter_count%kcritical)
+        !end if
+        if (ns%feedback%is_inner.OR.ns%feedback%is_imp)  then
+            if(ns%feedback%is_inner) then
+              call Perform_TH_self(transient_flag, power, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)
+            elseif(ns%feedback%is_imp)then
+              !call Perform_TH_imp(transient_flag, power, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)  
+            endif 
             call self_fdbk%update (geom, Tfuel, Tcoolant, Rhocoolant, hot_Tf=max_Tfuel, hot_Tm=max_Tcoolant, hot_Rho_m=min_Rhocoolant, out_Tm=toutlet, mask=mat_info%mask_core)
             call self_fdbk%check (is_pass, .FALSE.)
             call self_fdbk%relax ()

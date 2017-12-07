@@ -1,44 +1,27 @@
-!$
-!===================================================================================================
+!***************************************************************************************
+! test if
+!  module: debugassembly
 !
-!   module for thermal hydraulic feedback interface
-!---------------------------------------------------------------------------------------------------
-!   Public subroutine lists:    Perform_TH_self
+!  PURPOSE:  Entry point for the console application.
 !
-!   Public type lists:          HotRecord_self
-!
-!===================================================================================================
-module TH2NK_interface_self
-    
-    use constants
-    use, intrinsic  :: ISO_FORTRAN_ENV
-    
-    use stastics,           only : stastics_max_value, stastics_min_value
-    
-    use th_global
-    use th_parallel_channel
-    
+!  pow(na,nr),fq_core(na,nr)     平均功率密度，功率峰因子
+!  nr = SIZE(assembly, dim=1)    径向的组件数目
+!  na = SIZE(assembly, dim=2)    轴向的节块数目，原输入变量不需要操作赋值的另外用局部变量表达
+! 
+!***************************************************************************************
+    module TH2NK_interface_IMP
+     !两个实例：reInputdata/assm1
+     use IMP_re_input_global
+     use IMP_assm_global
+     use IMP_driving_pre_process
+     use IMP_driving_output
+     use IMP_power_header
     implicit none
-    private
-    public  :: Perform_TH_self, HotRecord_self
-    
-    type  HotRecord_self
-        integer                 :: axial   = 1
-        integer                 :: radial  = 1
-        real(8)                 :: value   = 0.0D0
-    end type HotRecord_self
-    
-    type(HotRecord_self)  :: smax_Tfuel
-    type(HotRecord_self)  :: smax_Tcoolant
-    type(HotRecord_self)  :: smin_Rhocoolant
 
-contains
-    !$
-    !===============================================================================================
-    !
-    !===============================================================================================
-    subroutine Perform_TH_self(transient_flag, assembly, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)
-        
+     real,allocatable::power(:,:),fq_core(:,:)
+     integer M,N,i,j
+    contains
+    subroutine Perform_TH_imp(transient_flag, assembly, Tfuel, Tcoolant, Rhocoolant, max_Tfuel, max_Tcoolant, min_Rhocoolant, last, current, toutlet)
         logical, intent(in)      :: transient_flag                              ! .TRUE. --transient
         real(KREAL), intent(in)  :: assembly(:, :)                              ! (nr, na), in W, 各组件功率;
         real(KREAL), intent(in out)  :: Tfuel(:, :)                             ! (nr, na), in K, 各组件平均燃料温度;
@@ -77,64 +60,45 @@ contains
             end if
         end do
         
-        fq_core = 1.0D0
+        fq_core = 1.0D0     
         if (transient_flag)  then
-            call Driving_ParallelChannel_transient (power, fq_core, 1, last_, current_)
+            !call Driving_ParallelChannel_transient (power, fq_core, 1, last_, current_)
         else
             call Driving_ParallelChannel_steady (power, fq_core)
-        end if
-        
-        if (allocated(power))       deallocate(power)
-        if (allocated(fq_core))     deallocate(fq_core)
-        
-        do ia = 1, na
-            do ir = 1, nr
-                Tfuel(ir, ia) = (avg_channel%tfuel_avg(ia, ir) + avg_channel%tfuel_avg(ia-1, ir)) / 2.0
-                Tcoolant(ir, ia) = (avg_channel%tcoolant(ia, ir) + avg_channel%tcoolant(ia-1, ir)) / 2.0
-                Rhocoolant(ir, ia) = (avg_channel%rhocoolant(ia, ir) + avg_channel%rhocoolant(ia-1, ir)) / 2.0
-!                Tfuel(ir, ia) = avg_channel%tfuel_avg(ia, ir) 
-!                Tcoolant(ir, ia) = avg_channel%tcoolant(ia, ir) 
-!                Rhocoolant(ir, ia) = avg_channel%rhocoolant(ia, ir) 
-            end do
-        end do
-        
-        smax_Tfuel%axial  = 1
-        smax_Tfuel%radial = 1
-        smax_Tfuel%value  = 0.0D0
-        smax_Tcoolant%axial  = 1
-        smax_Tcoolant%radial = 1
-        smax_Tcoolant%value  = 0.0D0
-        smin_Rhocoolant%axial  = 1
-        smin_Rhocoolant%radial = 1
-        smin_Rhocoolant%value  = 0.0D0
-        do ia = 1, na
-            do ir = 1, nr
-                if (avg_channel%tfuel_center(ia, ir) > smax_Tfuel%value)  then
-                    smax_Tfuel%axial  = ia
-                    smax_Tfuel%radial = ir
-                    smax_Tfuel%value  = avg_channel%tfuel_center(ia, ir)
-                end if 
-                
-                if (avg_channel%tcoolant(ia, ir) > smax_Tcoolant%value)  then
-                    smax_Tcoolant%axial  = ia
-                    smax_Tcoolant%radial = ir
-                    smax_Tcoolant%value  = avg_channel%tcoolant(ia, ir)
-                end if 
-                
-                if (avg_channel%rhocoolant(ia, ir) < smin_Rhocoolant%value)  then
-                    smin_Rhocoolant%axial  = ia
-                    smin_Rhocoolant%radial = ir
-                    smin_Rhocoolant%value  = avg_channel%tcoolant(ia, ir)
-                end if 
-            end do
-        end do
-        
-        max_Tfuel = smax_Tfuel%value
-        max_Tcoolant = smax_Tcoolant%value
-        min_Rhocoolant = smin_Rhocoolant%value
-        
-        toutlet = avg_channel%tcoolant_out
+        end if    
     
-    end subroutine Perform_TH_self
+    
+    
+    !*********************************************
+    !*********************************************
+    !********************************************* 
+    call sys_pre_process()
+     !*********************************************
+     M=size(assm1%thermal%temperature,dim=1)
+     N=size(assm1%thermal%temperature,dim=2)
+     allocate(power(M,N),fq_core(M,N))
+     fq_core=0.0
+     power=0.0  
+     do i=1,M,1
+         do j=1,N,1
+          if(j<=assm1%mesh%Nf) power(i,j)=2.827*1e7
+         enddo
+     enddo
+     allocate(temperature(M,N),pressure(M),velocity(M-1))
+     !*********************************************
+     call assm1%steady(power,fq_core)!power come from other data,so it should be an interface in place with the data
+     temperature=assm1%thermal%temperature
+     pressure=assm1%thermal%pressure
+     velocity=assm1%thermal%velocity
+     do while(timer1%ctime<timer1%ttotal) 
+      timer1%ctime=timer1%ctime+timer1%dt
+      call update_power(power,fq_core,timer1%ltime,timer1%ctime)
+      call assm1%transient(power, fq_core,timer1%ltime,timer1%ctime)
+      call timer1%record(assm1%th_boundary%T%outlet,assm1%th_boundary%u%inlet,power(1,1))
+      print*,'ctime=',timer1%ctime
+      timer1%ltime=timer1%ctime
+     enddo
+     call Run_output() 
+     end subroutine Perform_TH_imp
+    end module TH2NK_interface_IMP
 
-end module TH2NK_interface_self
