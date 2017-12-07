@@ -1,0 +1,34 @@
+set(libsrcs
+    cmns.for
+    core_anc.for
+    core_bwr.for
+    core_cpp.for
+    core_de.for
+    core_ecs.for
+    core_feq.for
+    core_mlt.for
+    core_ph0.for
+    core_pr.for
+    core_qui.for
+    core_stn.for
+    flash2.for
+    flsh_sub.for
+    idealgas.for
+    mix_aga8.for
+    mix_hmx.for
+    prop_sub.for
+    realgas.for
+    sat_sub.for
+    setup.for
+    setup2.for
+    trnsp.for
+    trns_ecs.for
+    trns_tcx.for
+    trns_vis.for
+    utility.for
+)
+
+add_library(
+  refprop STATIC
+  ${libsrcs}
+)

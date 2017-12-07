@@ -1,0 +1,468 @@
+! ==================================================================================================
+! this part is for case name
+CASENAME:         "all input key words illustration"
+
+! --------------------------------------------------------------------------------------------------
+! --all the blank line and contents after '!' will be ignored
+! --input is not case sensitive
+! --line length should not exceed 500 characters
+! --------------------------------------------------------------------------------------------------
+
+! ==================================================================================================
+! <<global control logical>>
+CONTROL:
+
+!               is_search       ppm 
+boron           T               821.23 
+
+!               is_transient    power           percent
+transient       F               1010.0E6        100.0 
+
+!               is_TH
+th              T 
+
+!               is_stress
+stress          T 
+
+!               is_feedback
+feedback        T          
+
+!               is_hdf5         is_vtk 
+output          T               T 
+                
+!               logfile         screenfile
+verbosity       2               2
+                
+! ==================================================================================================
+! <<calculation method>>
+METHOD:
+
+!               is_60symmetry   theta           SN 
+quadrature      F               0               4 
+                
+!               is_LW           is_upscatter    is_Ks
+steady          F               F               T
+                
+!               scheme(1-PK/ 2-PCQM /3-FI) 
+transient       2 
+        
+!               eigen          fsp
+error_type      2              2
+                               
+!               max_inner      max_outer    rms_inner     rms_outer    rms_fission_rate   rms_eigen
+error_eigen     10             500          5.0E-6        1.0E-5       1.0E-5             1.0E-5
+error_fsp       13             500          1.0E-6        5.0E-6       5.0E-6             5.0E-6
+        
+!               nthread
+openmp          4 
+                
+!               scheme(1-none/ 2-picard /3-anderson)
+nk_th           1 
+
+! ==================================================================================================
+! <<material parameter>>
+MATERIAL:
+
+!               num             is_external
+mat_num         38              F
+
+!               energy_group    scat_order
+energy_group    2               1
+                
+! ------------------------------------------------------------------------------
+! fission spectrum (from 1 to n_ng)
+! total cross section 
+! nu-fission cross section 
+! kappa-fission cross section 
+! scatter matrix (line i: i-->group 1 to n_ng), order 0
+! scatter matrix (line i: i-->group 1 to n_ng), order 1
+! ------------------------------------------------------------------------------
+!               mat_ID          mat-            mat+ 
+mat_xsec        1               1               1 
+  1.00000000    0.00000000 
+  0.23809524    0.83333333
+  0.00700000    0.20000000
+  0.00700000    0.20000000
+
+  0.21809524    0.01000000
+  0.00000000    0.68333333  
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+ 
+mat_xsec        2               2               2
+  1.00000000    0.00000000 
+  0.23809524    0.83333333
+  0.00700000    0.20000000
+  0.00700000    0.20000000
+
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+
+mat_xsec        3               3               3
+  1.00000000    0.00000000 
+  
+  0.25641026    0.66666667
+  0.00300000    0.06000000
+  0.00300000    0.06000000
+  
+  0.23841026    0.01000000
+  0.00000000    0.61666667
+  0.23841026    0.01000000
+  0.00000000    0.61666667
+  
+!               delayed_group   type(1-normal/ 2-srac)
+delayed_group   6               1 
+
+! ------------------------------------------------------------------------------
+! delay neutron fission spectrum based on energy group (a line is one dg)
+! neutron velocity (from 1 to n_ng)
+! array of beta
+! array of lambda
+! ------------------------------------------------------------------------------
+!               start_mat       end_mat
+mat_dnp         1               1
+   1.000        0.000
+   1.0E7        2.0E5
+   0.0075
+   0.08
+   
+mat_dnp         2              3
+   1.000        0.000
+   1.0E7        2.0E5
+   0.0075
+   0.08
+
+!               num             is_external
+extq_num        3               F
+
+! ------------------------------------------------------------------------------
+! external source (from 1 to n_ng)
+! ------------------------------------------------------------------------------
+!               source_ID
+extq            1
+  1.00000000    0.00000000
+
+extq            2
+  1.00000000    0.00000000
+  
+! ==================================================================================================
+! <<core geometry>>
+GEOMETRY:
+   
+!               type(1-rec/ 2-hex/ 3-ansys)
+type            1
+   
+!               nz              layer_height (bottom-->top)
+layer           5               5*5.0
+
+!               n_layer_lower   n_layer_upper
+ref_axial       1               1
+   
+! ------------------------------------------------------------------------------
+! geom-REC
+!               nzone           size
+rec_xdim        5               5*5.0
+rec_ydim        5               5*5.0
+
+!               material_to_zone(0-blank)
+rec_conf        1        2  2  2  2  2  2  2  2  1
+                1        2  2  2  2  2  2  2  2  1
+                1        2  2  2  2  2  2  2  1  1
+                1        2  2  2  2  2  2  2  1   
+                1        2  2  2  2  2  2  1  1   
+                1        2  2  2  2  2  1  1   
+                1        2  2  2  2  1  1   
+                1        2  2  1  1  1   
+                1        1  1  1   
+                
+!               radial bc (x-/ x+/ y-/ y+)
+rec_bc          0  0  0  0 
+                
+!               meshsize (1/ 2/ 3)
+rec_mesh        1 
+                
+! ------------------------------------------------------------------------------
+! geom-HEX
+!               xx              yy              pitch
+hex_dim         5               8               17.66
+
+!               material_to_zone(0-blank)
+hex_conf        1                 4   4   4   4   4   4 
+                1                4   4   3   3   3   4   4 
+                1              4   3   2   2   2   2   3   4 
+                1            4   3   2   2   1   2   2   3   4 
+                1          4   3   2   1   1   1   1   2   3   4   
+                1        4   4   2   2   1   1   1   2   2   4   4 
+                1          4   3   2   1   1   1   1   2   3   4 
+                1            4   3   2   2   1   2   2   3   4 
+                1              4   3   2   2   2   2   3   4 
+                1                4   4   3   3   3   4   4 
+                1                  4   4   4   4   4   4  
+                
+!               radial bc (outer/ left/ right)
+hex_bc          0  0  0
+                
+!               meshsize (1/ 2/ 3)
+hex_mesh        1 
+
+! ------------------------------------------------------------------------------
+! geom-TRI
+!               is_bevel_edge
+bevel           F
+
+!               meshfile
+mesh_file       "./ii.dat"      "./xy.dat"
+    
+!               n_point         n_nodal         n_segment       n_zone 
+scale           228             402             4               9
+                
+!               start_point     final_point     boundary 
+bc_radial       59              209             0
+bc_radial       209             164             0
+bc_radial       164             1               1
+bc_radial       1               59              1
+
+!               z-              z+ (0=void, 1=reflector)
+bc_axial        1               1
+
+! ------------------------------------------------------------------------------
+!               n_plane_mat
+mat_plane       2 
+
+!               planar_index  material_to_zone(for every material zone)
+mat_conf        1             3 2 3 2 1 3 3 3 3  
+mat_conf        2             3 2 3 2 1 3 3 3 3  
+
+!               assign planar number to layer (bottom-->top)
+mat_assign      1 2 1 2 1
+   
+!               n_plane_extq
+extq_plane      2 
+
+!               planar_index  q_to_zone(for every material zone)
+extq_conf       1             3 2 3 2 1 3 3 3 3  
+extq_conf       2             3 2 3 2 1 3 3 3 3  
+
+!               assign planar number to layer (bottom-->top)
+extq_assign     1 2 1 2 1
+   
+!               n_FA
+FA_set          5
+
+FA_type         1   3*11   2*12    2*1  2*2  2*3  2*4  2*5   13  3*14             ! in-FA
+FA_type         2   3*11   2*12    2*6  2*7  2*8  2*9 2*10   13  3*14             ! out-FA
+FA_type         3   3*15   2*15   2*15 2*15 2*15 2*15 2*15   15  3*15             ! Reflector
+FA_type         4   3*18   2*18   2*18 2*18 2*18 2*18 2*18   16  3*16             ! CR-Primary
+FA_type         5   3*18   2*18   2*18 2*18 2*18 2*18 2*18   16  3*16             ! CR-Secondary
+   
+!               
+FA_assign                   1 1 1 1 4 1 1 1 1 1 2 2 3 3 3 3 3 
+                           1 1 1 1 1 1 1 1 1 1 2 2 2 3 3 3 3 
+                          1 1 4 1 1 1 1 1 1 1 1 2 2 3 3 3 3 
+                         1 1 1 1 1 1 1 5 1 1 4 2 2 2 3 3 3 
+                        4 1 1 1 1 1 1 1 1 1 1 2 2 2 3 3 3 
+                       1 1 1 1 1 1 1 1 1 1 1 2 2 2 3 3 3 
+                      1 1 1 1 1 1 5 1 1 1 1 2 2 2 3 3 3 
+                     1 1 1 5 1 1 1 1 1 1 4 2 2 2 3 3 3 
+                    1 1 1 1 1 1 1 1 1 1 1 2 2 2 3 3 3 
+                   1 1 1 1 1 1 1 1 1 1 2 2 2 2 3 3 3 
+                  2 2 1 4 1 1 1 4 1 2 2 2 2 2 3 3 3 
+                 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 
+                3 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 
+               3 3 3 2 2 2 2 2 2 2 2 3 3 3 3 3 3 
+              3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+             3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+            3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+   
+! ------------------------------------------------------------------------------
+! geom-CR
+!               step_size   cr_gap      min_step     max_step
+cr_step         1.5875      11.33       0.0          264.0 
+
+!               n_rod       n_bank 
+cr_bank         26          23 
+                
+!               cr_to_zone(for every materil zone)
+cr_conf         8  0  4  0  5  0  2  0  0
+                0 12  0 18  0 14  0 22  0
+                4  0  1  0 10  0  6  0  0
+                0 19  0 13  0 16  0  0  0
+                5  0 11  0  3  0 20  0  0
+                0 15  0 17  0  9  0  0
+                2  0  7  0 21  0  0  0
+                0 23  0  0  0  0  0
+                0  0  0  0  0
+
+!               position_per_bank(initial step per bank)
+!               MA-1     MB-1      MC&MD-2    M1&M2-3   AO-4      SD-12
+cr_position     264.0    264.0     2*264.0    3*264.0   4*264.0   12*264.0
+   
+! ==================================================================================================
+! <<TH calculation>>
+TH:
+
+!               method(1-inner/ 2-outer/ 3-lra)
+method          1
+                
+!               mesh_TH         meshsize(cm)
+mesh_TH         44              28.067 42*10.22 32.131
+
+!               relax_TH        relax_CB
+relax           0.7             0.7
+
+!               t_coolant       t_fuel
+error           1.0E-3          1.0E-3
+                
+!               n_pellet        n_cladding
+cond_size       15              5
+
+!               tcoolin         is_search
+inlet           573.0           T
+
+!               tmincoolout     tmaxcoolout     tmaxcladsurf    max_velocity    
+search          723.0           753.0           773.0           2.0                        
+
+!               flow(for every materil zone)
+flow            22.4524 44.9050 44.9050 44.9050 44.9050 44.9050 44.9050 44.9050 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000
+                44.9050 89.8099 89.8099 89.8099 89.8099 89.8099 00.0000 00.0000
+                44.9050 89.8099 89.8099 89.8099 00.0000 00.0000 00.0000
+                00.0000 00.0000 00.0000 00.0000 00.0000
+                
+!               fq_lattice
+fq_lattice      1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05  1.05  1.05
+                1.05  1.05  1.05  1.05  1.05
+
+!               gamma_frac
+gamma           2.6
+                
+!               coolant_type  
+coolant         2
+
+!               nTypGeomAssm
+geom_info       5
+
+!               type_ID     numpin      nfuelpin    pitch       rod         cladth      gap       
+assembly        1           289         264         1.26193     0.475841    0.063596    0.0059     ! A_000
+assembly        2           289         264         1.26193     0.475841    0.063596    0.0059     ! B_088
+assembly        3           289         264         1.26193     0.475841    0.063596    0.0059     ! C_0XX
+assembly        4           73          66          1.26193     0.475841    0.063596    0.0059     ! C_0XX
+assembly        5           145         132         1.26193     0.475841    0.063596    0.0059     ! C_0XX
+
+!               type_ID     clad_type   gap_type    fuel_type   
+property_type   1           4           5           4                           ! A_000
+property_type   2           4           5           4                           ! B_088
+property_type   3           4           5           4                           ! C_0XX
+property_type   4           4           5           4                           ! C_0XX
+property_type   5           4           5           4                           ! C_0XX
+    
+!               assembly_to_zone(for every materil zone)
+th_conf         4  5  5  5  5  5  5  5  0
+                5  1  2  1  2  1  2  3  0
+                5  2  1  2  1  2  1  3  0
+                5  1  2  1  2  1  2  3  0
+                5  2  1  2  1  2  3  0  0
+                5  1  2  1  2  1  3  0
+                5  2  1  2  3  3  0  0
+                5  3  3  3  0  0  0
+                0  0  0  0  0
+
+! ==================================================================================================
+! <<xsec feedback parameter>>
+FEEDBACK:
+
+!               method(1-lilac/ 2-interpolation/ 3-neacrp/ 4-lra)
+method          1 
+
+!               n_parameter 
+data            4 
+
+!               GWd/tU     ppm         K           K
+parameter       'Bu'       'CB'        'Tf'        'Tm'
+!                   
+max             10.0       1500.0      1500.0      611.77
+ref             0.0        800.0       924.77      583.0
+min             0.0        0.0         557.4       557.4
+
+!               nSection   value(GWd/tU)
+burnup_sec      8          0.5  2.0  11.0  20.0  29.0  38.0  50.0  62.0 
+
+!               filename
+burnup_map      "./burnMAP.cycle1.0000MW.44.dat"
+
+!               filename
+xensam_map      "./xenMAP.cycle1.0000MW.44.dat"  
+                "./samMAP.cycle1.0000MW.44.dat"
+
+! ==================================================================================================
+! <<transient defination>>
+TRANSIENT:
+                
+!               timestep(1-specified/ 2-adaptive)
+time_step       1
+                
+!               transient_start    transient_end      transient_section 
+step_tr         0.0                1.0                2                 
+!               end_time_point     time_step_length (per time section)
+section         0.5                0.0025
+section         1.0                0.0025
+
+!               adaptive_info
+adap_info       0.0
+   
+!               is_xs        num     
+var_xsec        T            7 
+                ! mat_id     ng_start   ng_end    time_start    time_end    type       percentage   to_ng_start  to_ng_end 
+sig_s           1            2          2         0.0           0.2         RAMP       0.0000       2            2 
+sig_s           1            2          2         0.0           0.2         RAMP       0.0000       2            2 
+sig_s           1            2          2         0.0           0.2         RAMP       0.0000       2            2 
+                ! mat_id     ng_start   ng_end    time_start    time_end    type       percentage
+sig_t           2            2          2         0.0           0.2         RAMP       0.0000    
+sig_t           2            2          2         0.0           0.2         RAMP       0.0000 
+sig_f_nu        3            2          2         0.0           0.2         RAMP       0.0000 
+sig_f_nu        3            2          2         0.0           0.2         RAMP       0.0000 
+                                                                                       
+!               is_source    num                              
+var_extq        T            2                                              
+                ! mat_id     ng_start   ng_end    time_start    time_end    type       percentage
+extq            1            2          2         0.0           0.2         RAMP       0.0000    
+extq            2            2          2         0.0           0.2         RAMP       0.0000    
+
+!               is_cr        num
+var_cr          T            2
+                ! bank_id    pos_start  pos_end   time_start    time_end    type
+cr_move         1            0.0        50.0      0.0           1.0         RAMP
+cr_move         2            0.0        50.0      0.0           1.0         RAMP
+
+!               is_mat       num
+var_mat         T            2
+                ! mat_beg    percent    mat_end   percent       time_start  time_end   type 
+mat             1            50.0       2         50.00         0.0         0.2        RAMP
+mat             2            0.00       2         100.0         0.0         0.2        RAMP
+
+!               is_flow      num
+var_flow        T            2 
+                ! chan_id    type       natural   time_start   [a     b     c     d]
+flow            0            1          0.3       2.0          2.5   0.0   0.0   0.0
+flow            1            1          0.3       2.0          2.5   0.0   0.0   0.0 
+
+!               is_Tm        num
+var_Tm          T            1 
+                ! type       time_start   [a     b     c     d]
+Tm              1            2.0          2.5   0.0   0.0   0.0
+
+! =====================================(END)========================================================
+END:

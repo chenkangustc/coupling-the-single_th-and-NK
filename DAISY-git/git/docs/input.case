@@ -1,0 +1,345 @@
+! ==================================================================================================
+! this part is for case name
+CASENAME:         "all input key words illustration"
+
+! --------------------------------------------------------------------------------------------------
+! this is a test exmaple
+! --all the blank line and contents after '!' will be ignored
+! --input is not case sensitive
+! --line length should not exceed 500 characters
+! --------------------------------------------------------------------------------------------------
+
+! ==================================================================================================
+! --this part is global case control logical
+CONTROL:
+
+!               is_eigen        power_level(Watt)
+steady          T               1.0E0
+
+!               is_adjoint      adjoint_type
+adjoint         F               'homogeneous'
+
+!               is_transient    kinetics_type
+transient       F               'normal'
+
+!               is_link         link_type
+link            F               'interpolation'
+
+!               is_feedback      
+feedback        F 
+     
+!               energy_group    scat_order
+energy_group    2               1
+  
+!               delayed_group    
+delayd_group    6                
+                
+!               is_HDF5         is_vtk   
+output          T               T
+
+!               Nomp
+thread          4 
+   
+! ==================================================================================================
+! --this part is calculation method
+METHOD:
+
+!               is_60symmetry       n_theta             n_sn     
+qudarature      F                   0                   4       
+                
+!               is_LW               is_upscatter_cycle  n_upscatter_cycle       is_Ks
+steady          F                   F                   0                       T
+
+!               transient_scheme    is_extrapolation    extrapolation_scheme
+transient       'pcqs'              F                   'linear'
+        
+!               eigen        fsp
+error_type      2            2
+        
+!               max_inner    max_outer    rms_inner     rms_outer    rms_fission_rate   rms_eigen
+error_eigen     10           500          5.0E-6        1.0E-5       1.0E-5             1.0E-5
+        
+!               max_inner    max_outer    rms_inner     rms_outer    rms_fission_rate   rms_eigen
+error_fsp       13           500          1.0E-6        5.0E-6       5.0E-6             5.0E-6
+
+! ==================================================================================================
+! --this part is link parameter
+LINK:
+
+!               n_parameter
+data            5
+
+!               MW.D/t       ppm         K           K           Kg/M^3
+parameter       'Bu'        'CB'        'Tf'        'Tm'        'rho_m'
+
+!               value
+max_limit       10.0        1000.0      1000.0      500.0       700.0
+
+reference       10.0        1000.0      1000.0      500.0       700.0
+
+min_limit       10.0        1000.0      1000.0      500.0       700.0
+
+! ==================================================================================================
+! --this part is material parameter
+MATERIAL:
+
+!               n_mat       n_source
+scale           3           2
+
+!               is_external
+type            F
+
+!               mat_ID          mat-            mat+ 
+mat             1               1               1 
+! fission spectrum (from 1 to n_ng)
+  1.00000000    0.00000000 
+
+! total cross section 
+  0.23809524    0.83333333
+
+! nu-fission cross section 
+  0.00700000    0.20000000
+  
+! kappa-fission cross section 
+  0.00700000    0.20000000
+  
+! scatter matrix (line i: i-->group 1 to n_ng), order 0
+  0.21809524    0.01000000
+  0.00000000    0.68333333  
+  
+! scatter matrix (line i: i-->group 1 to n_ng), order 1
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+ 
+mat             2               2               2
+  1.00000000    0.00000000 
+  
+  0.23809524    0.83333333
+  0.00700000    0.20000000
+  0.00700000    0.20000000
+
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+ 
+  0.21809524    0.01000000
+  0.00000000    0.68333333
+  
+mat             3               3               3
+  1.00000000    0.00000000 
+  
+  0.25641026    0.66666667
+  0.00300000    0.06000000
+  0.00300000    0.06000000
+  
+  0.23841026    0.01000000
+  0.00000000    0.61666667
+  
+  0.23841026    0.01000000
+  0.00000000    0.61666667
+  
+!               start_mat       end_mat
+mat_d           1               1
+! delay neutron fission spectrum based on energy group (a line is one dg)
+   1.000        0.000
+
+! neutron velocity (from 1 to n_ng)
+   1.0E7        2.0E5
+
+! array of beta
+   0.0075
+     
+! array of lambda
+   0.08
+   
+mat_d           2              3
+   1.000        0.000
+   1.0E7        2.0E5
+   0.0075
+   0.08
+
+!               source_ID
+q_external      1
+! external source (from 1 to n_ng)
+  1.00000000    0.00000000
+
+q_external      2
+  1.00000000    0.00000000
+  
+! ------------------------------------------------------------------------------
+!               nXS         nDET
+detINFO         2           4
+
+detXS           1
+    2.564103E-01    6.666667E-01
+detXS           2
+    2.384103E-01    1.000000E-02
+ 
+detXS           0
+'detector.INFO'
+ 
+!               id      C       iXS     iz      ia      ir      is
+detPOINT        1       1.0     1       80      1       -1      -1
+detPOINT        2       2.0     2       80      1       -1      -1
+detPOINT        3       5.0     1       80      1       -1      -1
+detPOINT        4       5.0     2       80      1       -1      -1
+ 
+! ==================================================================================================
+! --this part is core geometry
+GEOMETRY:
+   
+!               is_bevel_edge
+type            F
+    
+!               n_point     n_nodal         n_segment       n_zone   
+scale           228         402             4               9
+   
+!               n_layer     n_plane_mat     n_plane_source
+layer           5           2               2
+
+!               n_layer_lower               n_layer_upper
+ref_axial       1                           1
+
+!               layer_height (bottom-->top)          
+height          5*5.0 
+
+!               planar_index  material_to_zone(for every material zone)
+plane_mat       1             3 2 3 2 1 3 3 3 3                                 ! planar_index 1
+plane_mat       2             3 2 3 2 1 3 3 3 3                                 ! planar_index 2
+
+!               planar_index  material_to_zone(for every material zone)
+plane_source    1             0 2 0 2 1 0 0 0 0                                 ! planar_index 1
+plane_source    2             0 2 0 2 1 0 0 0 0                                 ! planar_index 2
+
+!               assign planar number to layer (bottom-->top)
+assign_mat      1 2 1 2 1
+
+!               assign planar number to layer (bottom-->top)
+assign_source   1 2 1 2 1
+
+!               boundary%bottom             boundary%top
+bc_axial        1                           1
+
+!               start_point     adjecent_point      final_point         boundary (0=void, 1=reflector)
+bc_radial       59              59                  209                 0
+bc_radial       209             209                 164                 0
+bc_radial       164             164                 1                   1
+bc_radial       1               1                   59                  1
+                
+!               step_size       cr_gap       min_step     max_step
+cr_step         1.0             0.0          0.0          180.0
+
+!               n_rod           n_bank        
+cr_bank         3               1         
+                
+!               cr_to_zone(for every materil zone)
+cr_configure    0 0 1 0 1 0 1 0 0
+
+!               position_per_bank(initial position per bank)
+cr_position     50.0
+   
+! ==================================================================================================
+! --this part is transient process
+TRANSIENT:
+                
+!               transient_start    transient_end      transient_section 
+step_tr         0.0                1.0                2                 
+!               section ID         end_time_point     time_step_length (per time section)
+section         1                  0.5                0.0025
+section         2                  1.0                0.0025
+   
+!               is_xs_perturbation      total_type_number     
+perturb_xsec    T                       7 
+                ! mat_id     ng_start   ng_end    time_start    time_end    perturbation_type   percentage   to_ng_start  to_ng_end   scat_index
+sigma_s         1            2          2         0.0           0.2         RAMP                0.0000       2            2           1
+sigma_s         1            2          2         0.0           0.2         RAMP                0.0000       2            2           1
+sigma_s         1            2          2         0.0           0.2         RAMP                0.0000       2            2           1
+                ! mat_id     ng_start   ng_end    time_start    time_end    perturbation_type   percentage
+sigma_t         2            2          2         0.0           0.2         RAMP                0.0000    
+sigma_t         2            2          2         0.0           0.2         RAMP                0.0000    
+sigma_f_nu      3            2          2         0.0           0.2         RAMP                0.0000    
+sigma_f_nu      3            2          2         0.0           0.2         RAMP                0.0000    
+
+!               is_source_perturbation  total_type_number 
+perturb_source  T                       2 
+                ! mat_id     ng_start   ng_end    time_start    time_end    perturbation_type   percentage
+intensity       1            2          2         0.0           0.2         RAMP                0.0000    
+intensity       2            2          2         0.0           0.2         RAMP                0.0000    
+
+!               is_control_rod_move     n_bank
+perturb_cr      T                       2
+                ! bank_id    pos_start  pos_end   time_start    time_end    perturbation_type
+cr_move         1            0.0        50.0      0.0           1.0         RAMP
+cr_move         2            0.0        50.0      0.0           1.0         RAMP
+
+!               is_mat_perburbation     total_type_number
+perturb_mat     T                       2
+                ! mat_beg    percent    mat_end   percent       time_start  time_end           perburbation_type 
+mat             1            50.0       2         50.0          0.0         0.2                RAMP
+mat             2             0.0       2        100.0          0.0         0.2                RAMP
+
+!               is_flow_perburnation    total_type_number
+perturb_flow    T                       2 
+                ! chan_id    type       natural   time_start   [a     b     c     d]
+flow            0            1          0.3       2.0          2.5   0.0   0.0   0.0
+flow            1            1          0.3       2.0          2.5   0.0   0.0   0.0 
+
+!               is_Tm_perburnation      total_type_number
+perturb_Tm      T                       1 
+                ! type       time_start   [a     b     c     d]
+Tm              1            2.0          2.5   0.0   0.0   0.0
+
+! ==================================================================================================
+! --this part is feedback control  
+FEEDBACK:
+                
+!               type        weight
+effTF           1           0.90
+                
+!               is_search       target 
+boron           T               1.0    
+
+!               is_inner        is_model        model_name (LRA)
+fdbk            F               T               'lra'
+
+!               tcoolin         is_search
+design          573.0           T
+
+!               flow
+flow            9*82.12
+
+!               tmincoolout     tmaxcoolout     tmaxcladsurf    max_velocity    
+search          723.0           753.0           773.0           2.0                        
+
+!               gamma_frac
+gamma           1.9
+                
+!               fq_lattice
+fq_lattice      1.0 1.0 1.0 
+                1.1 1.1 1.1 
+                1.2 1.2 1.2
+
+!               t_coolant       t_fuel
+criteria        1.0E-3          1.0E-3
+
+!               n_pellet        n_cladding
+mesh_size       15              5
+                
+!               coolant_type  
+coolant         13
+
+!               nTypGeomAssm    is_hexagonal
+geom_info       2               T
+
+!               type_ID     numpin      nfuelpin    pitch       rod         cladth      bond        hole
+assembly        1           90          90          1.3406      4.15E-1     0.565E-1    0.115E-1    0.90E-1
+assembly        2           90          90          1.3406      4.15E-1     0.565E-1    0.115E-1    0.90E-1
+
+!               type_ID     clad_type   gap_type    fuel_type   
+property_type   1           13          3           13
+property_type   2           13          3           13
+                
+!               assembly_to_zone(for every materil zone)
+th_configure    0 0 0 1 1 1 2 2 2
+                
+! =====================================(END)========================================================
+END:
