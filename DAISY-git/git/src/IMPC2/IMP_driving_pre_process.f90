@@ -120,12 +120,17 @@ contains
 	  integer,intent(in)::layer
 	  integer,intent(in)::layer_start
 	  integer,intent(in)::layer_end
+	  !local
+	  integer n_start
+	  integer n_end
+	  n_start=layer_start+1
+	  n_end=layer-layer_end
 	  !real,intent(in)::height(:)
       write(*,*)'set assmebly as below:'
       !设置几何参数
       call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%acf,reInputdata%Height,reInputdata%pd,reInputdata%npin)
       !设置网格参数
-      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,zone,layer,layer_start,layer_end)
+      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,zone,layer,n_start,n_end)
       !设置初始值
       call assm%initdata%set(reInputdata%Ti,reInputdata%Pi,reInputdata%Ui,reInputdata%Tin,reInputdata%Pin,reInputdata%Uin)
       !设置收敛因子

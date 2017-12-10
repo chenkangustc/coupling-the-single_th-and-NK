@@ -5,17 +5,17 @@ module imp_assm_header
     implicit none
     type,public::AssmGeom
       
-      real(KREAL):: pellet          !芯块半径
-      real(KREAL):: Bond         !元件气隙厚度
-      real(KREAL):: Cladth     !元件外壳厚度
-      !real(KREAL):: AssmCladth !组件外壳厚度
-      real(KREAL):: pitch     !组件外对边距（包含包壳厚度）
+      real(KREAL):: pellet         !芯块半径
+      real(KREAL):: Bond           !元件气隙厚度
+      real(KREAL):: Cladth         !元件外壳厚度
+      !real(KREAL):: AssmCladth    !组件外壳厚度
+      real(KREAL):: pitch          !组件外对边距（包含包壳厚度）
       real(KREAL):: Height         !组件高度（活性区）
       real(KREAL):: pd             !燃料元件PD比     
-      integer N_fuelpin       !燃料pin的个数
-      real(KREAL):: rod !元件半径
-      real(KREAL):: area!芯块横截面积
-      integer N_pin       !pin总数
+      integer N_fuelpin            !燃料pin的个数
+      real(KREAL):: rod            !元件半径
+      real(KREAL):: area           !芯块横截面积
+      integer N_pin                !pin总数
     contains
       procedure,public::set=>set_assmgeom
       procedure,public::print=>print_assmgeom
