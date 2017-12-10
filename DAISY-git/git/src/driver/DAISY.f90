@@ -39,8 +39,9 @@ program DAISY
     use th_post_process,                    only : Driving_th_post_process
     use th_check_model,                     only : Driving_th_check_model
     
-    !use imp driver
-    !use imp_assm_global
+	use imp_assm_global
+    use imp_driving_pre_process,             only : Sys_pre_process
+    use test_TH2NK_steady
     implicit none
     
     ! --------------------------------------------------------------------------
@@ -50,6 +51,11 @@ program DAISY
     call Run_pre_process ()
     
     call Driving_th_pre_process ()
+	
+	call Sys_pre_process()
+    
+    call Perform_TH_imp()
+	
     
     ! --------------------------------------------------------------------------
     ! perturbation calculation

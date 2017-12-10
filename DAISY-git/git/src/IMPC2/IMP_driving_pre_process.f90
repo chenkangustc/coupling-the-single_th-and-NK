@@ -1,6 +1,10 @@
 module imp_driving_pre_process
-    use imp_assm_global
+    use constants
+	use global 
+    use global_state
+	use imp_assm_global
     use imp_re_input_global
+	
     implicit none
     private
     public::Sys_pre_process
@@ -12,25 +16,31 @@ module imp_driving_pre_process
 contains
     subroutine Sys_pre_process()
      implicit none
+     real(KREAL)::ttotal
+     real(KREAL)::ltime
+     real(KREAL)::ctime
+     integer::Nt
      write(*,*)'start the sys pre process:'
      !读取参数
      call reInputdata%set()
      !call reInputdata%publish()
      !参数赋值
-     call set_assembly(assm1,reInputdata)
+     call set_assembly(assm1,reInputdata,ns%state%zone,ns%state%layer,ns%state%layer_bottom,ns%state%layer_top)
 	 print*,'set nf ng ns...'
-	 assm1%mesh%Nf=reInputdata%Nf
-	 assm1%mesh%Ng=reInputdata%Ng
-	 assm1%mesh%Ns=reInputdata%Ns
+
 	 print*,'nf=',assm1%mesh%nf,'ng=',assm1%mesh%ng,'ns=',assm1%mesh%ns
-     call timer1%set(150.0,150)!(ttotal,Nt)
+     ttotal=150.0
+     Nt=150
+     call timer1%set(ttotal,Nt)!(ttotal,Nt)
      !分配空间
      call alloc_assembly(assm1)
      call timer1%alloc()
      !初始化
      call init_assembly(assm1)
      !    timer1%init(ttotal,Nt,ctime,ltime)
-     call timer1%init(0.0,0.0)
+     ltime=0.0
+     ctime=0.0
+     call timer1%init(ctime,ltime)
     end subroutine Sys_pre_process
     
          subroutine init_assembly(assm)
@@ -102,15 +112,20 @@ contains
       if(allocated(assm%pow%fq_core))  deallocate(assm%pow%fq_core)
      end subroutine Free_assembly
      
-     subroutine set_assembly(assm,reInputdata)
+     subroutine set_assembly(assm,reInputdata,zone,layer,layer_start,layer_end)
       implicit none
       type(sys_assembly),intent(in out)::assm
       type(sys_re_input),intent(in)::reInputdata
+	  integer,intent(in)::zone
+	  integer,intent(in)::layer
+	  integer,intent(in)::layer_start
+	  integer,intent(in)::layer_end
+	  !real,intent(in)::height(:)
       write(*,*)'set assmebly as below:'
       !设置几何参数
       call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%acf,reInputdata%Height,reInputdata%pd,reInputdata%npin)
       !设置网格参数
-      call assm%mesh%set(reInputdata%ny,reInputdata%ny_start,reInputdata%ny_end)
+      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,zone,layer,layer_start,layer_end)
       !设置初始值
       call assm%initdata%set(reInputdata%Ti,reInputdata%Pi,reInputdata%Ui,reInputdata%Tin,reInputdata%Pin,reInputdata%Uin)
       !设置收敛因子
@@ -122,7 +137,7 @@ contains
        implicit none
        type(sys_assembly),intent(in out)::assm
        !local
-       real Df,Dg,Ds,Dy 
+       real(KREAL):: Df,Dg,Ds,Dy 
        integer  M,N,i,j
      write(*,*)'calculate the grid value...'
      Df=assm%geom%pellet/assm%mesh%Nf

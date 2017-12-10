@@ -1,19 +1,20 @@
 module imp_assm_header
     use imp_mathkerel
     use imp_property
+	use constants
     implicit none
     type,public::AssmGeom
       
-      real pellet          !芯块半径
-      real Bond         !元件气隙厚度
-      real Cladth     !元件外壳厚度
-      !real AssmCladth !组件外壳厚度
-      real pitch     !组件外对边距（包含包壳厚度）
-      real Height         !组件高度（活性区）
-      real pd             !燃料元件PD比     
+      real(KREAL):: pellet          !芯块半径
+      real(KREAL):: Bond         !元件气隙厚度
+      real(KREAL):: Cladth     !元件外壳厚度
+      !real(KREAL):: AssmCladth !组件外壳厚度
+      real(KREAL):: pitch     !组件外对边距（包含包壳厚度）
+      real(KREAL):: Height         !组件高度（活性区）
+      real(KREAL):: pd             !燃料元件PD比     
       integer N_fuelpin       !燃料pin的个数
-      real rod !元件半径
-      real area!芯块横截面积
+      real(KREAL):: rod !元件半径
+      real(KREAL):: area!芯块横截面积
       integer N_pin       !pin总数
     contains
       procedure,public::set=>set_assmgeom
@@ -24,25 +25,26 @@ module imp_assm_header
         integer nf
         integer ng
         integer ns
+		integer n_zone
         integer ny
         integer Ny_start
         integer Ny_end
-        real,allocatable::r(:,:)
-        real,allocatable::z(:,:)
+        real(KREAL),allocatable::r(:,:)
+        real(KREAL),allocatable::z(:,:)
       contains
       procedure,public::set=>set_assmmesh
       procedure,public::print=>print_assmmesh
       end type Assmmesh
     
     type,public::boundary
-        real inlet
-        real outlet
+        real(KREAL):: inlet
+        real(KREAL):: outlet
     end type boundary
     
     type,public::iteration
-        real,allocatable::Temperature(:,:) !pvt
-        real,allocatable::pressure(:)
-        real,allocatable::velocity(:)
+        real(KREAL),allocatable::Temperature(:,:) !pvt
+        real(KREAL),allocatable::pressure(:)
+        real(KREAL),allocatable::velocity(:)
     end type iteration
       
     type,public::th_boundary
@@ -57,10 +59,10 @@ module imp_assm_header
     end type th_boundary
     
     type,public::hydraulic
-        real fric
-        real aflow
-        real wet
-        real de
+        real(KREAL):: fric
+        real(KREAL):: aflow
+        real(KREAL):: wet
+        real(KREAL):: de
     contains
         procedure,public::set=>set_hydraulic
         procedure,public::print=>print_hydraulic
@@ -69,47 +71,47 @@ module imp_assm_header
     
         
     type,public::material!热物性和水力学参数
-        real,allocatable::rho(:,:)!热物性
-        real,allocatable::shc(:,:)
-        real,allocatable::ctc(:,:)
-        real,allocatable::dvs(:,:)
-        real,allocatable::htc(:)
+        real(KREAL),allocatable::rho(:,:)!热物性
+        real(KREAL),allocatable::shc(:,:)
+        real(KREAL),allocatable::ctc(:,:)
+        real(KREAL),allocatable::dvs(:,:)
+        real(KREAL),allocatable::htc(:)
      contains
        procedure,public::init=>init_material
     end type material
      
     type,public::thermal!                
-        real,allocatable::Temperature(:,:) !pvt
-        real,allocatable::pressure(:)
-        real,allocatable::velocity(:)
+        real(KREAL),allocatable::Temperature(:,:) !pvt
+        real(KREAL),allocatable::pressure(:)
+        real(KREAL),allocatable::velocity(:)
       contains
        procedure,public::init=>init_thermal
       end type thermal
       
     type,public::AssmInit
-      real Ti!初始温度
-      real Pi!初始压力
-      real Ui!初始速度
-      real Tin
-      !real Pin
-      real Pout
-      real Uin
+      real(KREAL):: Ti!初始温度
+      real(KREAL):: Pi!初始压力
+      real(KREAL):: Ui!初始速度
+      real(KREAL):: Tin
+      !real(KREAL):: Pin
+      real(KREAL):: Pout
+      real(KREAL):: Uin
     contains
       procedure,public::set=>set_assminit
       procedure,public::print=>print_assminit
     end type AssmInit
     
     type,public::confactor
-      real alpha!初始温度
-      real sigma!初始压力
+      real(KREAL):: alpha!初始温度
+      real(KREAL):: sigma!初始压力
     contains
       procedure,public::set=>set_confactor
       procedure,public::print=>print_confactor
     end type confactor
     
     type,public::assmpow
-        real,allocatable::power(:,:)
-        real,allocatable::fq_core(:,:)
+        real(KREAL),allocatable::power(:,:)
+        real(KREAL),allocatable::fq_core(:,:)
     contains
         procedure,public::set=>set_power
         procedure,public::print=>print_power
@@ -145,13 +147,13 @@ module imp_assm_header
     subroutine set_assmgeom(this,pellet,Bond,Cladth,pitch,Height,pd,N_fuelpin)
        implicit none
        class(assmgeom),intent(in out)::this
-       real,intent(in)::pellet          !元件半径
-       real,intent(in)::Bond         !元件气隙厚度
-       real,intent(in)::Cladth     !元件外壳厚度
-       !real,intent(in)::AssmCladth !组件外壳厚度
-       real,intent(in)::pitch     !组件外对边距（包含包壳厚度）
-       real,intent(in)::Height         !组件高度（活性区）
-       real,intent(in)::pd
+       real(KREAL),intent(in)::pellet          !元件半径
+       real(KREAL),intent(in)::Bond         !元件气隙厚度
+       real(KREAL),intent(in)::Cladth     !元件外壳厚度
+       !real(KREAL)::,intent(in)::AssmCladth !组件外壳厚度
+       real(KREAL),intent(in)::pitch     !组件外对边距（包含包壳厚度）
+       real(KREAL),intent(in)::Height         !组件高度（活性区）
+       real(KREAL),intent(in)::pd
        integer,intent(in)::N_fuelpin       !元件的个数
        this%pellet=pellet
        this%Bond=Bond
@@ -206,12 +208,20 @@ module imp_assm_header
        100 format(1x,'alpha=',F7.4,3x,'sigma=',F7.4/)
      end subroutine print_confactor
      
-     subroutine set_assmmesh(this,ny,ny_start,ny_end)
+     subroutine set_assmmesh(this,nf,ng,ns,n_zone,ny,ny_start,ny_end)
         implicit none
         class(assmmesh),intent(in out)::this
+		integer,intent(in)::nf
+		integer,intent(in)::ng
+		integer,intent(in)::ns
+		integer,intent(in)::n_zone
         integer,intent(in)::ny
         integer,intent(in)::ny_start
         integer,intent(in)::ny_end
+		this%nf=nf
+		this%ng=ng
+		this%ns=ns
+		this%n_zone=n_zone
         this%ny=ny
         this%ny_start=ny_start
         this%ny_end=ny_end
@@ -221,9 +231,9 @@ module imp_assm_header
      subroutine init_th_boundary(this,Tin,uin,pout)
        implicit none
        class(th_boundary),intent(in out)::this
-       real,intent(in)::Tin
-       real,intent(in)::uin
-       real,intent(in)::pout
+       real(KREAL),intent(in)::Tin
+       real(KREAL),intent(in)::uin
+       real(KREAL),intent(in)::pout
        write(*,*)'init the PVT inlet boundary value'
        this%T%inlet=Tin
        this%u%inlet=uin
@@ -234,7 +244,7 @@ module imp_assm_header
      subroutine update_th_boundary(this,ctime)
        implicit none
        class(th_boundary),intent(in out)::this
-       real,intent(in)::ctime
+       real(KREAL),intent(in)::ctime
        if(this%u%inlet>0.6)then
         this%u%inlet=2.0*1.0/(1.0+(ctime/5.5))
        elseif(this%u%inlet<=0.6)then
@@ -289,9 +299,9 @@ module imp_assm_header
      subroutine init_thermal(this,Temperature,Pressure,Velocity)
         implicit none
         class(thermal),intent(in out)::this
-        real,intent(in)::Temperature
-        real,intent(in)::Pressure
-        real,intent(in)::Velocity
+        real(KREAL),intent(in)::Temperature
+        real(KREAL),intent(in)::Pressure
+        real(KREAL),intent(in)::Velocity
 		!local
 		integer i
         write(*,*)'init the thermal value'
@@ -306,12 +316,12 @@ module imp_assm_header
      subroutine set_AssmInit(this,Ti,Pi,Ui,Tin,Pout,Uin)
         implicit none
         class(AssmInit),intent(in out)::this
-        real,intent(in)::Ti
-        real,intent(in)::Pi
-        real,intent(in)::Ui
-        real,intent(in)::Tin
-        real,intent(in)::Pout
-        real,intent(in)::Uin
+        real(KREAL),intent(in)::Ti
+        real(KREAL),intent(in)::Pi
+        real(KREAL),intent(in)::Ui
+        real(KREAL),intent(in)::Tin
+        real(KREAL),intent(in)::Pout
+        real(KREAL),intent(in)::Uin
         this%Ti=Ti
         this%Pi=Pi
         this%Ui=Ui
@@ -324,8 +334,8 @@ module imp_assm_header
      subroutine set_confactor(this,alpha,sigma)
         implicit none
         class(confactor),intent(in out)::this
-        real,intent(in)::alpha
-        real,intent(in)::sigma
+        real(KREAL),intent(in)::alpha
+        real(KREAL),intent(in)::sigma
         this%alpha=alpha
         this%sigma=sigma
         call this%print
@@ -334,7 +344,7 @@ module imp_assm_header
      subroutine set_hydraulic(this,fric)
         implicit none
         class(hydraulic),intent(in out)::this
-        real,intent(in)::fric
+        real(KREAL),intent(in)::fric
         this%fric=fric
         call this%print
      end subroutine set_hydraulic
@@ -342,7 +352,7 @@ module imp_assm_header
      subroutine cal_hydraulic(this,rc,pd)
         implicit none
         class(hydraulic),intent(in out)::this
-        real,intent(in)::rc,pd
+        real(KREAL),intent(in)::rc,pd
         print*,'calculate the hydraulic constants...'
         call get_hyconstant(rc,pd,this%Aflow,this%wet,this%de)
      end subroutine cal_hydraulic
@@ -350,8 +360,8 @@ module imp_assm_header
      subroutine set_power(this,power,fq_core)
         implicit none
         class(assmpow),intent(in out)::this
-        real,intent(in)::power(:,:)
-        real,intent(in)::fq_core(:,:)
+        real(KREAL),intent(in)::power(:,:)
+        real(KREAL),intent(in)::fq_core(:,:)
         write(*,*)'set power...'
         this%power=power
         this%fq_core=fq_core

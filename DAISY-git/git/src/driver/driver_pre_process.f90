@@ -35,7 +35,7 @@ contains
         character(len=MAX_WORD_LEN)  :: file_main
         character(len=MAX_WORD_LEN)  :: case_file
         logical  :: is_getting
-        
+        print*,'Run pre process ...'
         ! initialize time counter
         call time_program%start ()
         call cputime_program%start ()

@@ -1,11 +1,12 @@
 module imp_power_header
+    use constants
     contains
     subroutine update_power(power,fq_core,ltime,ctime)
        implicit none
-       real,intent(in out)::power(:,:)
-       real,intent(in out)::fq_core(:,:)
-       real,intent(in)::ltime
-       real,intent(in)::ctime
+       real(KREAL),intent(in out)::power(:,:)
+       real(KREAL),intent(in out)::fq_core(:,:)
+       real(KREAL),intent(in)::ltime
+       real(KREAL),intent(in)::ctime
        !local
        if (ctime>0.and.ctime<=2.0) then
            power=power-0.1*(ctime-ltime)*power

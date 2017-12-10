@@ -10,7 +10,7 @@
 ! 
 !***************************************************************************************
     module TH2NK_interface_IMP
-      use imp_re_input_global
+     use imp_re_input_global
      use imp_assm_global
      use imp_driving_pre_process
      use imp_driving_output
@@ -18,11 +18,11 @@
      use imp_single_channel
     implicit none
 
-     real,allocatable::power(:,:),fq_core(:,:)
+     real(KREAL),allocatable::power(:,:),fq_core(:,:)
      integer M,N,i,j
     contains
     subroutine Perform_TH_imp()
-     call sys_pre_process()
+     !call sys_pre_process()
      !*********************************************
      M=size(assm1%thermal%temperature,dim=1)
      N=size(assm1%thermal%temperature,dim=2)

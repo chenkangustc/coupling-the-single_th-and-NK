@@ -1,18 +1,19 @@
 module imp_timer_header
+    use constants
     implicit none
     private
     public::sys_timer
     
     type::sys_timer
         !private
-        real::ltime
-        real::ctime
+        real(KREAL)::ltime
+        real(KREAL)::ctime
         integer::Nt
-        real::dt
-        real::ttotal
-        real,allocatable::Tout(:)
-        real,allocatable::Pow(:)
-        real,allocatable::Uin(:)
+        real(KREAL)::dt
+        real(KREAL)::ttotal
+        real(KREAL),allocatable::Tout(:)
+        real(KREAL),allocatable::Pow(:)
+        real(KREAL),allocatable::Uin(:)
     contains
         procedure,public::set=>set_timer
         procedure,public::init=>init_timer
@@ -28,7 +29,7 @@ module imp_timer_header
     contains
     subroutine set_timer(this,ttotal,Nt)
      class(sys_timer),intent(inout)::this
-     real,intent(in)::ttotal
+     real(KREAL),intent(in)::ttotal
      integer,intent(in)::Nt
      this%ttotal=ttotal
      this%Nt=Nt
@@ -37,8 +38,8 @@ module imp_timer_header
     
     subroutine init_timer(this,ctime,ltime)
      class(sys_timer),intent(inout)::this
-     real,intent(in)::ctime
-     real,intent(in)::ltime    
+     real(KREAL),intent(in)::ctime
+     real(KREAL),intent(in)::ltime    
 
      this%ctime=ctime
      this%ltime=ltime
@@ -49,9 +50,9 @@ module imp_timer_header
     
     subroutine record_timer(this,tout,uin,pow)
      class(sys_timer),intent(inout)::this
-     real,intent(in)::tout
-     real,intent(in)::uin
-     real,intent(in)::pow
+     real(KREAL),intent(in)::tout
+     real(KREAL),intent(in)::uin
+     real(KREAL),intent(in)::pow
      !local
      integer i
      i=this%ctime/this%dt

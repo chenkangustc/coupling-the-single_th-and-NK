@@ -1,4 +1,5 @@
 module imp_mathkerel
+    use constants
     implicit none
     private
     public::tdma
@@ -8,11 +9,11 @@ module imp_mathkerel
     
 contains
     subroutine tdma(N,A,B,u)
-      real A(N,N)
-      real B(N)
-      real u(N)
+      real(KREAL):: A(N,N)
+      real(KREAL):: B(N)
+      real(KREAL):: u(N)
       integer i,N
-      real,dimension(N)::aa,bb,cc,dd,x,y
+      real(KREAL),dimension(N)::aa,bb,cc,dd,x,y
 
       do i=1,N,1
           if(i==1)then
@@ -49,32 +50,32 @@ contains
     endsubroutine tdma    
     
     subroutine get_convection(lenth,flow_area,wetted_perimeter,density,velocity,viscosity,capacity,conductivity,convection) !lenth是特征长度,取水力学直径  Nu=(h*x)/k
-     real lenth
-     real flow_area
-     real wetted_perimeter
-     real density
-     real velocity
-     real De
-     real viscosity,capacity,convection,conductivity
-     real Pr,Re,Pe,Nu
+     real(KREAL):: lenth
+     real(KREAL):: flow_area
+     real(KREAL):: wetted_perimeter
+     real(KREAL):: density
+     real(KREAL):: velocity
+     real(KREAL):: De
+     real(KREAL):: viscosity,capacity,convection,conductivity
+     real(KREAL):: Pr,Re,Pe,Nu
      
      call get_Nusselt(flow_area,wetted_perimeter,density,velocity,viscosity,capacity,conductivity,Nu)  
      convection=Nu*conductivity/lenth
     end subroutine get_convection
     
     subroutine get_Nusselt(flow_area,wetted_perimeter,density,velocity,viscosity,capacity,conductivity,Nu)!液态重金属的努赛尔数
-     real flow_area
-     real wetted_perimeter    
-     real density
-     real velocity
-     real De
-     real Re 
-     real viscosity
-     real capacity
-     real conductivity
-     real Pr
-     real Pe
-     real Nu
+     real(KREAL):: flow_area
+     real(KREAL):: wetted_perimeter    
+     real(KREAL):: density
+     real(KREAL):: velocity
+     real(KREAL):: De
+     real(KREAL):: Re 
+     real(KREAL):: viscosity
+     real(KREAL):: capacity
+     real(KREAL):: conductivity
+     real(KREAL):: Pr
+     real(KREAL):: Pe
+     real(KREAL):: Nu
      
      De=4*flow_area/wetted_perimeter
      Re=4*density*velocity*De/viscosity
@@ -84,8 +85,8 @@ contains
     end subroutine get_Nusselt
     
     subroutine get_hyconstant(rc,pd,Aflow,wet,de)
-       real rc,p,pd !r是包壳外半径 p是对边距
-       real Aflow,Ashell,Atotal,wet,de
+       real(KREAL):: rc,p,pd !r是包壳外半径 p是对边距
+       real(KREAL):: Aflow,Ashell,Atotal,wet,de
        
            p=pd*2*rc
            Ashell=3.14*rc*rc

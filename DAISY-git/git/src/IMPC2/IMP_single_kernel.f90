@@ -1,4 +1,5 @@
 module imp_single_kernel
+    use constants
     use imp_mathkerel
     use imp_assembly_header
     implicit none
@@ -17,15 +18,15 @@ module imp_single_kernel
     contains
     subroutine solve_momentum(assm,flag,rhoi,ui,dt,ap)!(几何网格水力学)（p）（初始条件）（边界条件）（瞬态计算选项）
         type(sys_assembly),intent(in out)::assm
-        real,intent(in)::flag
-        !real,intent(in)::pguess(:)
-        real,intent(in)::rhoi(:)
-        real,intent(in)::ui(:)
-        real,intent(in)::dt
-        real,intent(in out)::ap(:)
+        real(KREAL),intent(in)::flag
+        !real(KREAL),intent(in)::pguess(:)
+        real(KREAL),intent(in)::rhoi(:)
+        real(KREAL),intent(in)::ui(:)
+        real(KREAL),intent(in)::dt
+        real(KREAL),intent(in out)::ap(:)
         !local
         integer M!M=Ny-1,矢量控制体的个数
-        real,allocatable::A(:,:),b(:)
+        real(KREAL),allocatable::A(:,:),b(:)
         M=assm%mesh%ny-1
         allocate(A(1:M,1:M),b(1:M))
         !pguess=assm%thermal%pressure
@@ -38,22 +39,22 @@ module imp_single_kernel
 subroutine cal_momentumA(assm,flag,rhoi,ui,dt,A,b,ap)
      implicit none
      type(sys_assembly),intent(in out)::assm
-     real,intent(in)::flag
-     !real,intent(in)::pguess(:)
-     real,intent(in)::rhoi(:),ui(:)
-     real,intent(in)::dt
-     real,intent(in out)::A(:,:)
-     real,intent(in out)::b(:)
-     real,intent(in out)::ap(:)
+     real(KREAL),intent(in)::flag
+     !real(KREAL),intent(in)::pguess(:)
+     real(KREAL),intent(in)::rhoi(:),ui(:)
+     real(KREAL),intent(in)::dt
+     real(KREAL),intent(in out)::A(:,:)
+     real(KREAL),intent(in out)::b(:)
+     real(KREAL),intent(in out)::ap(:)
       !local
        integer N,i!N是矢量控制体的个数
        integer nr,nz!nr是径向的控制体个数，nz是轴向的标量控制体个数
-       real dx
-       real f,De
-       real uin,pin,pout
-       real,allocatable::ulast(:),pguess(:)
-       real,allocatable::rho(:)
-       real,allocatable::aw(:),ae(:),api(:),bs(:)
+       real(KREAL):: dx
+       real(KREAL):: f,De
+       real(KREAL):: uin,pin,pout
+       real(KREAL),allocatable::ulast(:),pguess(:)
+       real(KREAL),allocatable::rho(:)
+       real(KREAL),allocatable::aw(:),ae(:),api(:),bs(:)
        N=assm%mesh%ny-1
        nr=assm%mesh%nf+assm%mesh%ng+assm%mesh%ns
        nz=assm%mesh%ny
@@ -114,15 +115,15 @@ subroutine cal_momentumA(assm,flag,rhoi,ui,dt,A,b,ap)
 subroutine solve_pressureCorrection(assm,flag,ap,rhoi,dt,pmodify,btotal)
     implicit none
     type(sys_assembly),intent(in out)::assm
-    real,intent(in)::flag
-    real,intent(in)::ap(:)
-    real,intent(in)::rhoi(:)
-    real,intent(in)::dt
-    real,intent(in out)::pmodify(:)
-    real,intent(in out)::btotal
+    real(KREAL),intent(in)::flag
+    real(KREAL),intent(in)::ap(:)
+    real(KREAL),intent(in)::rhoi(:)
+    real(KREAL),intent(in)::dt
+    real(KREAL),intent(in out)::pmodify(:)
+    real(KREAL),intent(in out)::btotal
     !local
     integer N
-    real,allocatable::A(:,:),b(:)
+    real(KREAL),allocatable::A(:,:),b(:)
     N=size(pmodify)
     allocate(A(N-1,N-1),b(N-1))
     call cal_pmodifyA(assm,flag,ap,rhoi,dt,A,b,btotal)
@@ -132,18 +133,18 @@ end subroutine solve_pressureCorrection
 subroutine cal_pmodifyA(assm,flag,ap,rhoi,dt,A,b,btotal)
  implicit none
  type(sys_assembly),intent(in out)::assm
- real,intent(in)::flag
- real,intent(in)::ap(:)
- real,intent(in)::rhoi(:)
- real,intent(in)::dt
- real,intent(in out)::A(:,:)
- real,intent(in out)::b(:)
- real,intent(in out)::btotal
+ real(KREAL),intent(in)::flag
+ real(KREAL),intent(in)::ap(:)
+ real(KREAL),intent(in)::rhoi(:)
+ real(KREAL),intent(in)::dt
+ real(KREAL),intent(in out)::A(:,:)
+ real(KREAL),intent(in out)::b(:)
+ real(KREAL),intent(in out)::btotal
  !local
  integer Ny,i,nr
- real uin,pout,dx
- real,allocatable::rho(:),ulast(:)
- real,allocatable::bp(:),be(:),bw(:),bb(:)
+ real(KREAL):: uin,pout,dx
+ real(KREAL),allocatable::rho(:),ulast(:)
+ real(KREAL),allocatable::bp(:),be(:),bw(:),bb(:)
 
  Ny=assm%mesh%Ny
  nr=assm%mesh%nf+assm%mesh%ng+assm%mesh%ns
@@ -217,11 +218,11 @@ end subroutine cal_pmodifyA
 subroutine modify_PV(assm,ap,pmodify)
   implicit none
   type(sys_assembly),intent(in out)::assm
-  real,intent(in)::ap(:)
-  real,intent(in out)::pmodify(:)
+  real(KREAL),intent(in)::ap(:)
+  real(KREAL),intent(in out)::pmodify(:)
   !local
   integer i,Ny
-  real alpha
+  real(KREAL):: alpha
   Ny=assm%mesh%Ny
   alpha=0.8
             do i=1,Ny-1,1
@@ -245,8 +246,8 @@ subroutine cal_th_convection(assm)
  type(sys_assembly),intent(in out)::assm
  !lcoal
  integer i,Ny,nr
- real De,Area,wet,velocity!单纯输入的变量可以用局部变量来替换
- real,allocatable::rho(:),dvs(:),shc(:),ctc(:)
+ real(KREAL):: De,Area,wet,velocity!单纯输入的变量可以用局部变量来替换
+ real(KREAL),allocatable::rho(:),dvs(:),shc(:),ctc(:)
  Ny=assm%mesh%Ny
  nr=assm%mesh%nf+assm%mesh%ng+assm%mesh%ns
  allocate(rho(0:Ny+1),dvs(0:Ny+1),shc(0:Ny+1),ctc(0:Ny+1))
@@ -275,15 +276,15 @@ end subroutine cal_th_convection
 subroutine cal_th_temperature(assm,flag,Ti,rhoi,dt)
  implicit none
  type(sys_assembly),intent(in out)::assm
- real,intent(in)::flag
- real,intent(in)::Ti(:,:),rhoi(:,:)
- real,intent(in)::dt
+ real(KREAL),intent(in)::flag
+ real(KREAL),intent(in)::Ti(:,:),rhoi(:,:)
+ real(KREAL),intent(in)::dt
  !local
-    real Area,Xt,xf,xg,xs,Df,Dg,Ds,Dy,uin,Tin
+    real(KREAL):: Area,Xt,xf,xg,xs,Df,Dg,Ds,Dy,uin,Tin
     integer  M,N,i,j,k,Nf,Ng,Ns,Ny
-    real,allocatable::Tj(:,:)
-    real,allocatable::RHO(:,:),SHC(:,:),CTC(:,:),DVS(:,:)
-    real,allocatable::aw(:,:),ae(:,:),ap(:,:),as(:,:),an(:,:),api(:,:),bs(:,:),q(:,:)
+    real(KREAL),allocatable::Tj(:,:)
+    real(KREAL),allocatable::RHO(:,:),SHC(:,:),CTC(:,:),DVS(:,:)
+    real(KREAL),allocatable::aw(:,:),ae(:,:),ap(:,:),as(:,:),an(:,:),api(:,:),bs(:,:),q(:,:)
      Area=assm%hydrau%aflow
      uin=assm%th_boundary%u%inlet
      Tin=assm%th_boundary%T%inlet
@@ -464,10 +465,10 @@ end subroutine cal_th_temperature
 subroutine solve_temperature(assm,flag,Ti,rhoi,dt)
  implicit none
  type(sys_assembly),intent(in out)::assm
- real,intent(in)::flag
- real,intent(in)::Ti(:,:)
- real,intent(in)::rhoi(:,:)
- real dt
+ real(KREAL),intent(in)::flag
+ real(KREAL),intent(in)::Ti(:,:)
+ real(KREAL),intent(in)::rhoi(:,:)
+ real(KREAL):: dt
  !local
  call cal_th_convection(assm)
  call cal_th_temperature(assm,flag,Ti,rhoi,dt)
@@ -477,10 +478,10 @@ end subroutine solve_temperature
 subroutine update_property(assm,drho)
   implicit none
   type(sys_assembly),intent(in out)::assm
-  real drho
+  real(KREAL):: drho
   !local
   integer i,M,N,Ny
-  real,allocatable::rhof(:)!用于存放上一迭代步的密度
+  real(KREAL),allocatable::rhof(:)!用于存放上一迭代步的密度
   Ny=assm%mesh%Ny
   M=Ny+1
   N=assm%mesh%Nf+assm%mesh%Ng+assm%mesh%Ns+1
@@ -503,12 +504,12 @@ end subroutine update_property
     subroutine solve_momentumA(N,A,b,u)
      implicit none
      integer,intent(in)::N
-     real,intent(in)::A(:,:)
-     real,intent(in)::b(:)
-     real,intent(in out)::u(:)
+     real(KREAL),intent(in)::A(:,:)
+     real(KREAL),intent(in)::b(:)
+     real(KREAL),intent(in out)::u(:)
      !local
      integer i
-     real,allocatable::uc(:)
+     real(KREAL),allocatable::uc(:)
      allocate(uc(1:N))
      
      call tdma(N,A,b,uc)
@@ -524,11 +525,11 @@ end subroutine update_property
     
 subroutine solve_pmodifyA(A,b,pmodify)
   implicit none
-  real,intent(in)::A(:,:),b(:)
-  real,intent(in out)::pmodify(:)
+  real(KREAL),intent(in)::A(:,:),b(:)
+  real(KREAL),intent(in out)::pmodify(:)
   !local
   integer M,N,i
-  real,allocatable::pmm(:)
+  real(KREAL),allocatable::pmm(:)
   M=size(b)
   N=size(pmodify)
   allocate(pmm(M))

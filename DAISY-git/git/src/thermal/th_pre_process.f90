@@ -38,6 +38,7 @@ contains
         
         ! ----------------------------------------------------------------------      
         ! allocate memory   
+		print*,'start th pre process ...'
         call avg_channel%alloc (nth)
         call hot_channel%alloc (nth)
         

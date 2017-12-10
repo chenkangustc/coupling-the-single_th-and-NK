@@ -1,4 +1,5 @@
 module imp_single_channel
+    use constants
     use imp_assm_global
     use imp_single_kernel
     use imp_assembly_header
@@ -9,16 +10,16 @@ module imp_single_channel
     contains
     subroutine driving_imp_steady(assm,power,fq_core)
     type(sys_assembly),intent(in out)::assm
-    real,intent(in)::power(:,:)
-    real,intent(in)::fq_core(:,:)
+    real(KREAL),intent(in)::power(:,:)
+    real(KREAL),intent(in)::fq_core(:,:)
     !local rhoi/ui/Ti/dt/ap/pmodify/
     integer M,N,Ny,i,j
-    real flag,dt
-    real btotal,drho!判断因子
-    real,allocatable::pmodify(:)
-    real,allocatable::ui(:),Ti(:,:)
-    real,allocatable::rhoi(:,:),rhofi(:)
-    real,allocatable::ap(:)
+    real(KREAL):: flag,dt
+    real(KREAL):: btotal,drho!判断因子
+    real(KREAL),allocatable::pmodify(:)
+    real(KREAL),allocatable::ui(:),Ti(:,:)
+    real(KREAL),allocatable::rhoi(:,:),rhofi(:)
+    real(KREAL),allocatable::ap(:)
     write(*,*)'start steady calculation:'
     flag=0.0
     dt=1.0!为保证方程求解dt不为0，无具体意义+
@@ -55,19 +56,19 @@ module imp_single_channel
      
 subroutine driving_imp_Transient(assm,power,fq_core,ltime,ctime)
     type(sys_assembly),intent(in out)::assm
-    real,intent(in)::power(:,:)
-    real,intent(in)::fq_core(:,:)
-    real,intent(in)::ltime
-    real,intent(in)::ctime
+    real(KREAL),intent(in)::power(:,:)
+    real(KREAL),intent(in)::fq_core(:,:)
+    real(KREAL),intent(in)::ltime
+    real(KREAL),intent(in)::ctime
     !local rhoi/ui/Ti/dt/ap/pmodify/
     integer M,N,Ny,i,j
-    real dt
-    real flag
-    real btotal,drho!判断因子
-    real,allocatable::pmodify(:)
-    real,allocatable::ui(:),Ti(:,:)
-    real,allocatable::rhoi(:,:),rhofi(:)
-    real,allocatable::ap(:)
+    real(KREAL):: dt
+    real(KREAL):: flag
+    real(KREAL):: btotal,drho!判断因子
+    real(KREAL),allocatable::pmodify(:)
+    real(KREAL),allocatable::ui(:),Ti(:,:)
+    real(KREAL),allocatable::rhoi(:,:),rhofi(:)
+    real(KREAL),allocatable::ap(:)
     write(*,*)'start transient calculation:'
     flag=1.0
     dt=ctime-ltime

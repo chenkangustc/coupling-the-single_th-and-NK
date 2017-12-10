@@ -86,7 +86,7 @@
 		<File RelativePath="..\..\..\git\src\header\transient_header.f90"/>
 		<File RelativePath="..\..\..\git\src\header\worth_header.f90"/>
 		<File RelativePath="..\..\..\git\src\header\xesm_header.f90"/></Filter>
-		<Filter Name="IMPC">
+		<Filter Name="IMPC2">
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assembly_header.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assm_global.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_assm_header.f90"/>
@@ -99,6 +99,7 @@
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_re_input_header.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_single_channel.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_single_kernel.f90"/>
+		<File RelativePath="..\..\..\git\src\IMPC2\IMP_test_TH2NK_steady.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\IMP_timer.f90"/>
 		<File RelativePath="..\..\..\git\src\IMPC2\TH2NK_interface_IMP.f90"/></Filter>
 		<Filter Name="inout">
