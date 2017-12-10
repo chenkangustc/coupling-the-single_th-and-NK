@@ -103,6 +103,7 @@ contains
         write(unit=to_write, fmt="(1x, A, ' version: ', I1, '.', I1, I1)") TRIM(CODENAME), VERSION_MAJOR, VERSION_MINOR, VERSION_RELEASE
         write(unit=to_write, fmt="(1x, 2x, A)") TRIM(COPYRIGHT)
         write(unit=to_write, fmt="(1x, 2x, A)") TRIM(LABORATORY)
+		!write(unit=to_write, fmt="(1x, 2x, A)") TRIM(IMP)
         write(unit=to_write, fmt="(1x, '------------------------------------------------------')")
         write(unit=to_write, fmt="(1x, /)")
     

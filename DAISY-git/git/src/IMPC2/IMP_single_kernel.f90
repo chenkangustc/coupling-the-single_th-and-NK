@@ -287,9 +287,9 @@ subroutine cal_th_temperature(assm,flag,Ti,rhoi,dt)
      Area=assm%hydrau%aflow
      uin=assm%th_boundary%u%inlet
      Tin=assm%th_boundary%T%inlet
-     xf=assm%geom%rFuel
-     xg=assm%geom%GasGap
-     xs=assm%geom%ShellThick
+     xf=assm%geom%pellet
+     xg=assm%geom%Bond
+     xs=assm%geom%Cladth
      Xt=Xf+Xg+Xs !°ü¿ÇÍâ¾¶
      Nf=assm%mesh%Nf
      Ng=assm%mesh%Ng

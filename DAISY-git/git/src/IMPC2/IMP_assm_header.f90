@@ -3,14 +3,18 @@ module imp_assm_header
     use imp_property
     implicit none
     type,public::AssmGeom
-      real rFuel          !元件半径
-      real GasGap         !元件气隙厚度
-      real ShellThick     !元件外壳厚度
-      real AssmShellThick !组件外壳厚度
-      real AcrossFlat     !组件外对边距（包含包壳厚度）
+      
+      real pellet          !芯块半径
+      real Bond         !元件气隙厚度
+      real Cladth     !元件外壳厚度
+      !real AssmCladth !组件外壳厚度
+      real pitch     !组件外对边距（包含包壳厚度）
       real Height         !组件高度（活性区）
-      real pd             !燃料元件PD比
-      integer n_pin       !元件的个数
+      real pd             !燃料元件PD比     
+      integer N_fuelpin       !燃料pin的个数
+      real rod !元件半径
+      real area!芯块横截面积
+      integer N_pin       !pin总数
     contains
       procedure,public::set=>set_assmgeom
       procedure,public::print=>print_assmgeom
@@ -21,6 +25,8 @@ module imp_assm_header
         integer ng
         integer ns
         integer ny
+        integer Ny_start
+        integer Ny_end
         real,allocatable::r(:,:)
         real,allocatable::z(:,:)
       contains
@@ -136,25 +142,25 @@ module imp_assm_header
      
      !private::cal_grid
     contains
-     subroutine set_assmgeom(this,rFuel,GasGap,ShellThick,AssmShellThick,AcrossFlat,Height,pd,n_pin)
+    subroutine set_assmgeom(this,pellet,Bond,Cladth,pitch,Height,pd,N_fuelpin)
        implicit none
        class(assmgeom),intent(in out)::this
-       real,intent(in)::rFuel          !元件半径
-       real,intent(in)::GasGap         !元件气隙厚度
-       real,intent(in)::ShellThick     !元件外壳厚度
-       real,intent(in)::AssmShellThick !组件外壳厚度
-       real,intent(in)::AcrossFlat     !组件外对边距（包含包壳厚度）
+       real,intent(in)::pellet          !元件半径
+       real,intent(in)::Bond         !元件气隙厚度
+       real,intent(in)::Cladth     !元件外壳厚度
+       !real,intent(in)::AssmCladth !组件外壳厚度
+       real,intent(in)::pitch     !组件外对边距（包含包壳厚度）
        real,intent(in)::Height         !组件高度（活性区）
        real,intent(in)::pd
-       integer,intent(in)::n_pin       !元件的个数
-       this%rFuel=rFuel
-       this%GasGap=GasGap
-       this%ShellThick=ShellThick
-       this%AssmShellThick=AssmShellThick
-       this%AcrossFlat=AcrossFlat
+       integer,intent(in)::N_fuelpin       !元件的个数
+       this%pellet=pellet
+       this%Bond=Bond
+       this%Cladth=Cladth
+       !this%AssmCladth=AssmCladth
+       this%pitch=pitch
        this%Height=Height
        this%pd=pd
-       this%n_pin=n_pin
+       this%N_fuelpin=N_fuelpin
        call this%print()
      end subroutine set_assmgeom
      
@@ -162,16 +168,16 @@ module imp_assm_header
       implicit none
       class(assmgeom),intent(in out)::this
       write(*,*)'set geom as below:'
-      write(*,100) this%rFuel,this%GasGap,this%ShellThick,this%AssmShellThick,this%AcrossFlat,this%Height,this%pd,this%n_pin
-      100 format(1x,'rFuel=',F8.4,3x,'GasGap=',F8.4,3x,'ShellThick=',F8.4,3x,'AssmShellThick=',F7.4,1x,'AcrossFlat=',F7.3,3x,'Height=',F7.3,3x,'pd=',F7.3,3x,'n_pin=',I3/)
+      write(*,100) this%pellet,this%Bond,this%Cladth,this%pitch,this%Height,this%pd,this%N_fuelpin
+      100 format(1x,'pellet=',F8.4,3x,'Bond=',F8.4,3x,'Cladth=',F8.4,3x,1x,'pitch=',F7.3,3x,'Height=',F7.3,3x,'pd=',F7.3,3x,'N_fuelpin=',I3/)
      end subroutine print_assmgeom
      
      subroutine print_assmmesh(this)
        implicit none
        class(assmmesh),intent(in out)::this
        write(*,*)'set mesh as below:'
-       write(*,100) this%nf,this%ng,this%ns,this%ny
-       100 format(1x,'Nf=',I3,3x,'Ng=',I3,3x,'Ns=',I3,3x,'Ny=',I3/)
+       write(*,100) this%ny,this%ny_start,this%ny_end
+       100 format(1x,'Ny=',I3,3x,'ny_start=',I3,3x,'ny_end=',I3/)
      end subroutine print_assmmesh
      
      subroutine print_hydraulic(this)
@@ -200,17 +206,15 @@ module imp_assm_header
        100 format(1x,'alpha=',F7.4,3x,'sigma=',F7.4/)
      end subroutine print_confactor
      
-     subroutine set_assmmesh(this,nf,ng,ns,ny)
+     subroutine set_assmmesh(this,ny,ny_start,ny_end)
         implicit none
         class(assmmesh),intent(in out)::this
-        integer,intent(in)::nf
-        integer,intent(in)::ng
-        integer,intent(in)::ns
         integer,intent(in)::ny
-        this%nf=nf
-        this%ng=ng
-        this%ns=ns
+        integer,intent(in)::ny_start
+        integer,intent(in)::ny_end
         this%ny=ny
+        this%ny_start=ny_start
+        this%ny_end=ny_end
         call this%print()
      end subroutine set_assmmesh
      

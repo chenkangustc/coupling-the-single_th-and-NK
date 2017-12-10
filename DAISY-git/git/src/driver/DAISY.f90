@@ -39,6 +39,8 @@ program DAISY
     use th_post_process,                    only : Driving_th_post_process
     use th_check_model,                     only : Driving_th_check_model
     
+    !use imp driver
+    !use imp_assm_global
     implicit none
     
     ! --------------------------------------------------------------------------

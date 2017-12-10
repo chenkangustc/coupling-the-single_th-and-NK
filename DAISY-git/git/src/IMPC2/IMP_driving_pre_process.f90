@@ -18,6 +18,11 @@ contains
      !call reInputdata%publish()
      !参数赋值
      call set_assembly(assm1,reInputdata)
+	 print*,'set nf ng ns...'
+	 assm1%mesh%Nf=reInputdata%Nf
+	 assm1%mesh%Ng=reInputdata%Ng
+	 assm1%mesh%Ns=reInputdata%Ns
+	 print*,'nf=',assm1%mesh%nf,'ng=',assm1%mesh%ng,'ns=',assm1%mesh%ns
      call timer1%set(150.0,150)!(ttotal,Nt)
      !分配空间
      call alloc_assembly(assm1)
@@ -45,7 +50,7 @@ contains
       !assm%pow%fq_core=0.0
       !网格
       call cal_grid(assm)
-      call assm%hydrau%cal(assm%geom%rFuel,assm%geom%pd)
+      call assm%hydrau%cal(assm%geom%pellet,assm%geom%pd)
      endsubroutine init_assembly
     
      subroutine alloc_assembly(assm)
@@ -103,9 +108,9 @@ contains
       type(sys_re_input),intent(in)::reInputdata
       write(*,*)'set assmebly as below:'
       !设置几何参数
-      call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%xos,reInputdata%acf,reInputdata%Height,reInputdata%pd,reInputdata%npin)
+      call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%acf,reInputdata%Height,reInputdata%pd,reInputdata%npin)
       !设置网格参数
-      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,reInputdata%ny)
+      call assm%mesh%set(reInputdata%ny,reInputdata%ny_start,reInputdata%ny_end)
       !设置初始值
       call assm%initdata%set(reInputdata%Ti,reInputdata%Pi,reInputdata%Ui,reInputdata%Tin,reInputdata%Pin,reInputdata%Uin)
       !设置收敛因子
@@ -120,9 +125,9 @@ contains
        real Df,Dg,Ds,Dy 
        integer  M,N,i,j
      write(*,*)'calculate the grid value...'
-     Df=assm%geom%rFuel/assm%mesh%Nf
-     Dg=assm%geom%GasGap/assm%mesh%Ng
-     Ds=assm%geom%ShellThick/assm%mesh%Ns
+     Df=assm%geom%pellet/assm%mesh%Nf
+     Dg=assm%geom%Bond/assm%mesh%Ng
+     Ds=assm%geom%Cladth/assm%mesh%Ns
      Dy=assm%geom%Height/assm%mesh%Ny
      M=assm%mesh%Ny+1
      N=assm%mesh%Nf+assm%mesh%Ng+assm%mesh%Ns+1

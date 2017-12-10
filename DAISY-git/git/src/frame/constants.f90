@@ -106,6 +106,7 @@ module constants
     character(len=MAX_WORD_LEN), parameter  :: COPYRIGHT  = 'Copyright (c) 2013-2016 Xi''an Jiaotong University'
     character(len=MAX_WORD_LEN), parameter  :: LABORATORY = 'Nuclear Engineering Computational Physics lib. (NECP)'
     character(len=MAX_WORD_LEN), parameter  :: CODENAME   = 'FRNK'
+    character(len=MAX_WORD_LEN), parameter  :: IMP        = 'Modified 2017 Insititution of Modern Physics , CAS'
     
     ! --------------------------------------------------------------------------
     ! file unit management
