@@ -16,6 +16,7 @@ module input_driver
     
     use global
     use th_global
+	use imp_assm_global
     use coefficient_iteration
     
     use files_dirs
@@ -199,6 +200,8 @@ contains
         do i = 1, SIZE(geom_assm)
             call geom_assm(i)%alloc (nth)
         end do
+		!for imp model
+		allocate(assm1%geom%height(ns%state%layer))
     
     end subroutine Allocate_after_scanning
     

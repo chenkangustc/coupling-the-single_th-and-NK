@@ -26,8 +26,10 @@ contains
       !print*,assm1%th_boundary%p%outlet
       !liquid PVT¡¢rho distribution
       !solid temperature distribution
-      print*,assm1%th_boundary%u%inlet,assm1%Thermal%velocity,assm1%th_boundary%u%outlet
+      
+	  print*,assm1%th_boundary%u%inlet,assm1%Thermal%velocity,assm1%th_boundary%u%outlet
       print*,assm1%th_boundary%p%inlet,assm1%Thermal%pressure,assm1%th_boundary%p%outlet
       print*,assm1%th_boundary%T%inlet,assm1%Thermal%temperature(:,assm1%mesh%Nf+assm1%mesh%Ng+assm1%mesh%Ns+1),assm1%th_boundary%T%outlet
-    end subroutine Run_output
+      print*,assm1%geom%height
+	end subroutine Run_output
 end module imp_driving_output

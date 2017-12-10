@@ -25,7 +25,7 @@ contains
      call reInputdata%set()
      !call reInputdata%publish()
      !参数赋值
-     call set_assembly(assm1,reInputdata,ns%state%zone,ns%state%layer,ns%state%layer_bottom,ns%state%layer_top)
+     call set_assembly(assm1,reInputdata,ns%state%zone,ns%state%layer,ns%state%layer_bottom,ns%state%layer_top,geom%height)
 	 print*,'set nf ng ns...'
 
 	 print*,'nf=',assm1%mesh%nf,'ng=',assm1%mesh%ng,'ns=',assm1%mesh%ns
@@ -33,7 +33,7 @@ contains
      Nt=150
      call timer1%set(ttotal,Nt)!(ttotal,Nt)
      !分配空间
-     call alloc_assembly(assm1)
+     call alloc_assembly(assm1,ns%state%layer)
      call timer1%alloc()
      !初始化
      call init_assembly(assm1)
@@ -63,9 +63,10 @@ contains
       call assm%hydrau%cal(assm%geom%pellet,assm%geom%pd)
      endsubroutine init_assembly
     
-     subroutine alloc_assembly(assm)
+     subroutine alloc_assembly(assm,layer)
       implicit none
       type(sys_assembly),intent(in out)::assm
+	  integer,intent(in)::layer
       !local
       integer::i_allocate
       integer::M,N,Ny
@@ -74,7 +75,8 @@ contains
       N=assm%mesh%Nf+assm%mesh%Ng+assm%mesh%Ns+1
       !check allocated first
       call Free_assembly(assm)
-      
+      allocate(assm%geom%height(layer))
+	  
       allocate(assm%property%rho(0:M,0:N))!(1:M,1:N)
       allocate(assm%property%shc(0:M,0:N))
       allocate(assm%property%ctc(0:M,0:N))
@@ -96,6 +98,8 @@ contains
      subroutine Free_assembly(assm)
       implicit none
       type(sys_assembly),intent(in out)::assm
+	  if(allocated(assm%geom%height))  deallocate(assm%geom%height)
+	  
       if(allocated(assm%property%rho))  deallocate(assm%property%rho)
       if(allocated(assm%property%shc))  deallocate(assm%property%shc)
       if(allocated(assm%property%ctc))  deallocate(assm%property%ctc)
@@ -112,25 +116,29 @@ contains
       if(allocated(assm%pow%fq_core))  deallocate(assm%pow%fq_core)
      end subroutine Free_assembly
      
-     subroutine set_assembly(assm,reInputdata,zone,layer,layer_start,layer_end)
+     subroutine set_assembly(assm,reInputdata,zone,layer,layer_bottom,layer_top,height)
       implicit none
       type(sys_assembly),intent(in out)::assm
       type(sys_re_input),intent(in)::reInputdata
 	  integer,intent(in)::zone
 	  integer,intent(in)::layer
-	  integer,intent(in)::layer_start
-	  integer,intent(in)::layer_end
+	  integer,intent(in)::layer_bottom
+	  integer,intent(in)::layer_top
+	  real(KREAL),intent(in)::height(:)
 	  !local
-	  integer n_start
-	  integer n_end
-	  n_start=layer_start+1
-	  n_end=layer-layer_end
+	  integer layer_core
+	  layer_core=layer-layer_bottom-layer_top
+	  !integer n_start
+	  !integer n_end
+	  !n_start=layer_bottom+1
+	  !n_end=layer-layer_top
 	  !real,intent(in)::height(:)
       write(*,*)'set assmebly as below:'
       !设置几何参数
-      call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%acf,reInputdata%Height,reInputdata%pd,reInputdata%npin)
+	  print*,geom%height
+      call assm%geom%set(reInputdata%xf,reInputdata%xg,reInputdata%xs,reInputdata%acf,Height,reInputdata%pd,reInputdata%npin)
       !设置网格参数
-      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,zone,layer,n_start,n_end)
+      call assm%mesh%set(reInputdata%nf,reInputdata%ng,reInputdata%ns,zone,layer_core,layer_bottom,layer_top)
       !设置初始值
       call assm%initdata%set(reInputdata%Ti,reInputdata%Pi,reInputdata%Ui,reInputdata%Tin,reInputdata%Pin,reInputdata%Uin)
       !设置收敛因子
@@ -143,16 +151,22 @@ contains
        type(sys_assembly),intent(in out)::assm
        !local
        real(KREAL):: Df,Dg,Ds,Dy 
-       integer  M,N,i,j
+       integer  M,N,i,j,k
      write(*,*)'calculate the grid value...'
      Df=assm%geom%pellet/assm%mesh%Nf
      Dg=assm%geom%Bond/assm%mesh%Ng
      Ds=assm%geom%Cladth/assm%mesh%Ns
-     Dy=assm%geom%Height/assm%mesh%Ny
+     !Dy=assm%geom%Height/assm%mesh%Ny
      M=assm%mesh%Ny+1
      N=assm%mesh%Nf+assm%mesh%Ng+assm%mesh%Ns+1
      
      Do i=0,M,1
+	   if(i>0.and.i<M-1) then 
+	     k=assm%mesh%layer_bottom+i
+	     Dy=assm%geom%Height(k)
+       else 
+         Dy=0.0
+       endif		 
          do j=0,N,1
             if (j==0)then
                assm%mesh%r(i,j)=0.0

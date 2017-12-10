@@ -47,7 +47,7 @@ program DAISY
     ! --------------------------------------------------------------------------
 !    call Driving_th_check_model ()
     print*,'the first time to modify the code of Daisy'
-    read(*,*)
+    !read(*,*)
     call Run_pre_process ()
     
     call Driving_th_pre_process ()

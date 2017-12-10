@@ -10,14 +10,16 @@ module imp_assm_header
       real(KREAL):: Cladth         !元件外壳厚度
       !real(KREAL):: AssmCladth    !组件外壳厚度
       real(KREAL):: pitch          !组件外对边距（包含包壳厚度）
-      real(KREAL):: Height         !组件高度（活性区）
-      real(KREAL):: pd             !燃料元件PD比     
-      integer N_fuelpin            !燃料pin的个数
+      real(KREAL):: pd             !燃料元件PD比        
       real(KREAL):: rod            !元件半径
       real(KREAL):: area           !芯块横截面积
-      integer N_pin                !pin总数
+	  real(KREAL),allocatable:: Height(:)       !组件高度（活性区）
+	  integer N_fuelpin            !燃料pin的个数
+      integer N_pin                !pin总数  
     contains
       procedure,public::set=>set_assmgeom
+	  !procedure,public::alloc=>alloc_assmgeom
+	  !procedure,public::free=>free_assmgeom
       procedure,public::print=>print_assmgeom
     end type AssmGeom
     
@@ -27,8 +29,8 @@ module imp_assm_header
         integer ns
 		integer n_zone
         integer ny
-        integer Ny_start
-        integer Ny_end
+        integer layer_bottom
+        integer layer_top
         real(KREAL),allocatable::r(:,:)
         real(KREAL),allocatable::z(:,:)
       contains
@@ -152,7 +154,7 @@ module imp_assm_header
        real(KREAL),intent(in)::Cladth     !元件外壳厚度
        !real(KREAL)::,intent(in)::AssmCladth !组件外壳厚度
        real(KREAL),intent(in)::pitch     !组件外对边距（包含包壳厚度）
-       real(KREAL),intent(in)::Height         !组件高度（活性区）
+       real(KREAL),intent(in)::Height(:)         !组件高度（活性区）
        real(KREAL),intent(in)::pd
        integer,intent(in)::N_fuelpin       !元件的个数
        this%pellet=pellet
@@ -160,7 +162,7 @@ module imp_assm_header
        this%Cladth=Cladth
        !this%AssmCladth=AssmCladth
        this%pitch=pitch
-       this%Height=Height
+       this%Height=Height*0.01
        this%pd=pd
        this%N_fuelpin=N_fuelpin
        call this%print()
@@ -170,7 +172,7 @@ module imp_assm_header
       implicit none
       class(assmgeom),intent(in out)::this
       write(*,*)'set geom as below:'
-      write(*,100) this%pellet,this%Bond,this%Cladth,this%pitch,this%Height,this%pd,this%N_fuelpin
+      write(*,100) this%pellet,this%Bond,this%Cladth,this%pitch,this%Height(1),this%pd,this%N_fuelpin
       100 format(1x,'pellet=',F8.4,3x,'Bond=',F8.4,3x,'Cladth=',F8.4,3x,1x,'pitch=',F7.3,3x,'Height=',F7.3,3x,'pd=',F7.3,3x,'N_fuelpin=',I3/)
      end subroutine print_assmgeom
      
@@ -178,8 +180,8 @@ module imp_assm_header
        implicit none
        class(assmmesh),intent(in out)::this
        write(*,*)'set mesh as below:'
-       write(*,100) this%ny,this%ny_start,this%ny_end
-       100 format(1x,'Ny=',I3,3x,'ny_start=',I3,3x,'ny_end=',I3/)
+       write(*,100) this%ny,this%layer_bottom,this%layer_top
+       100 format(1x,'Ny=',I3,3x,'layer_bottom=',I3,3x,'layer_top=',I3/)
      end subroutine print_assmmesh
      
      subroutine print_hydraulic(this)
@@ -208,7 +210,7 @@ module imp_assm_header
        100 format(1x,'alpha=',F7.4,3x,'sigma=',F7.4/)
      end subroutine print_confactor
      
-     subroutine set_assmmesh(this,nf,ng,ns,n_zone,ny,ny_start,ny_end)
+     subroutine set_assmmesh(this,nf,ng,ns,n_zone,ny,layer_bottom,layer_top)
         implicit none
         class(assmmesh),intent(in out)::this
 		integer,intent(in)::nf
@@ -216,15 +218,15 @@ module imp_assm_header
 		integer,intent(in)::ns
 		integer,intent(in)::n_zone
         integer,intent(in)::ny
-        integer,intent(in)::ny_start
-        integer,intent(in)::ny_end
+        integer,intent(in)::layer_bottom
+        integer,intent(in)::layer_top
 		this%nf=nf
 		this%ng=ng
 		this%ns=ns
 		this%n_zone=n_zone
         this%ny=ny
-        this%ny_start=ny_start
-        this%ny_end=ny_end
+        this%layer_bottom=layer_bottom
+        this%layer_top=layer_top
         call this%print()
      end subroutine set_assmmesh
      

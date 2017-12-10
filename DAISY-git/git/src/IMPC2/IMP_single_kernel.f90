@@ -47,7 +47,7 @@ subroutine cal_momentumA(assm,flag,rhoi,ui,dt,A,b,ap)
      real(KREAL),intent(in out)::b(:)
      real(KREAL),intent(in out)::ap(:)
       !local
-       integer N,i!N是矢量控制体的个数
+       integer N,i,k!N是矢量控制体的个数
        integer nr,nz!nr是径向的控制体个数，nz是轴向的标量控制体个数
        real(KREAL):: dx
        real(KREAL):: f,De
@@ -60,7 +60,7 @@ subroutine cal_momentumA(assm,flag,rhoi,ui,dt,A,b,ap)
        nz=assm%mesh%ny
        allocate(aw(1:N),ae(1:N),api(1:N),bs(1:N))
        allocate(rho(0:nz+1),ulast(1:N),pguess(1:N+1))
-        dx=assm%geom%height/assm%mesh%Ny
+        !dx=assm%geom%height/assm%mesh%Ny
         f=assm%hydrau%fric
         de=assm%hydrau%de
         rho=assm%property%rho(:,nr+1)
@@ -72,7 +72,18 @@ subroutine cal_momentumA(assm,flag,rhoi,ui,dt,A,b,ap)
        !dx rhoi,ulast,f,De,rho,uin,pin,api,pout
        !计算各个控制体的常系数和源项
        api=0.0
-       do i=1,N,1
+       do i=1,N,1	     
+	     if(i==1)then
+           k=i+assm%mesh%layer_bottom		 
+		   dx=assm%geom%height(k)+assm%geom%height(k+1)/2
+		 elseif(i>1.and.i<N) then	
+           k=i+assm%mesh%layer_bottom		 
+		   dx=assm%geom%height(k)
+		 elseif(i==N)then
+		   k=assm%mesh%Ny+assm%mesh%layer_top
+		   dx=assm%geom%height(k-1)+assm%geom%height(k)
+         endif		 
+		 
          if(i==1)then
              aw(i)=0.0
              ae(i)=0.0
@@ -141,7 +152,7 @@ subroutine cal_pmodifyA(assm,flag,ap,rhoi,dt,A,b,btotal)
  real(KREAL),intent(in out)::b(:)
  real(KREAL),intent(in out)::btotal
  !local
- integer Ny,i,nr
+ integer Ny,i,nr,k
  real(KREAL):: uin,pout,dx
  real(KREAL),allocatable::rho(:),ulast(:)
  real(KREAL),allocatable::bp(:),be(:),bw(:),bb(:)
@@ -153,14 +164,21 @@ subroutine cal_pmodifyA(assm,flag,ap,rhoi,dt,A,b,btotal)
 
  uin=assm%th_boundary%u%inlet
  pout=assm%th_boundary%p%outlet
- dx=assm%geom%height/assm%mesh%Ny
+ !dx=assm%geom%height/assm%mesh%Ny
  rho=assm%property%rho(:,nr+1)
  ulast=assm%thermal%velocity
         if(flag==0.0) then !steady
             dx=0.0
         endif
  
-        do i=1,Ny,1
+        do i=1,Ny,1	     
+          if(flag==0.0)then
+		     dx=0.0
+		  elseif(flag==1.0)then
+           k=i+assm%mesh%layer_bottom		 
+		   dx=assm%geom%height(k)
+		  endif
+
            if(i==1)then
              be(i)=1.5*(RHO(i)+RHO(i+1))/2.0/ap(i)
              bw(i)=0.0
@@ -301,7 +319,7 @@ subroutine cal_th_temperature(assm,flag,Ti,rhoi,dt)
      Df=Xf/Nf
      Dg=Xg/Ng
      Ds=Xs/Ns
-     Dy=assm%geom%height/Ny
+     !Dy=assm%geom%height/Ny
      
     allocate(Tj(1:M-1,1:N))
     allocate(RHO(0:M,0:N),SHC(0:M,0:N),CTC(0:M,0:N),DVS(0:M,0:N))
@@ -315,6 +333,7 @@ subroutine cal_th_temperature(assm,flag,Ti,rhoi,dt)
     
     api=0.0
     Do i=1,M-1,1
+	    Dy=assm%geom%height(i+assm%mesh%layer_bottom)
         Do j=1,N,1
          if (j==1)then!轴对称边界的控制体
           aw(i,j)=0.0
