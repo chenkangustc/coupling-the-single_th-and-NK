@@ -1,0 +1,472 @@
+! ==================================================================================================
+! this part is for case name
+CASENAME:         "CIADS"
+
+! --------------------------------------------------------------------------------------------------
+! this is a test exmaple
+! --all the blank line and contents after '!' will be ignored
+! --input is not case sensitive
+! --line length should not exceed 500 characters
+! --------------------------------------------------------------------------------------------------
+
+! ==================================================================================================
+! --this part is global case control logical
+CONTROL:
+pk_model         F
+
+ppm_search       F             1
+!               is_search      target           bank 
+rod_search      F              1.000              2
+
+!               is_eigen        power_level(Watt)  frac
+steady          F               1.25E6              1.0
+
+!               is_adjoint 
+adjoint         F 
+
+!               is_transient    kinetics_type
+transient       F               'normal'
+
+!               is_feedback      
+feedback        T 
+
+!               is_link        link_type
+link            T              'interpolation'
+     
+!               energy_group    scat_order
+energy_group    24              0
+  
+!               delayed_group    
+delayed_group   6                
+                
+!               is_HDF5         is_vtk    is_log
+output          T               F          T
+
+thread          6            
+                
+! ==================================================================================================
+! --this part is calculation method
+METHOD:
+
+!               is_60symmetry       n_theta             n_sn     
+quadrature      T                   60                   6       
+                
+!               is_LW               is_upscatter_cycle  n_upscatter_cycle       is_Ks
+steady           T                   F                   0                       T
+
+!               scheme          is_extrapolation    extrapolation_scheme
+transient       'pcqs'          F                   'linear'
+        
+!               max_inner    max_outer    rms_inner     rms_outer    rms_fission_rate   rms_eigen
+error_eigen     10           10          5.0E-6        1.0E-5       1.0E-5             1.0E-5
+        
+!               max_inner    max_outer    rms_inner     rms_outer    rms_fission_rate   rms_eigen
+error_fsp       13           10          1.0E-6        5.0E-6       5.0E-6             5.0E-6
+
+! ==================================================================================================
+! --this part is link parameter
+LINK:
+
+!               n_parameter
+data            2
+
+!               K           Kg/M^3
+parameter      'Tf'        'rho_m'
+
+max_limit       1500.0      10289.2
+reference       900.0       9126
+min_limit       600.0       9125.5
+
+! ==================================================================================================
+! --this part is material parameter
+MATERIAL:
+
+!               n_mat       n_source
+scale           31           13
+
+!               is_external
+type            T
+
+!mat_ID mat- mat+ 
+mat 1   1   1
+"VOID"
+mat 2   2   2
+"TAR1"
+mat 3   3   3
+"TAR2"
+mat 4   4   4
+"VES1"
+mat 5   5   5
+"VES2"
+mat 6   6   6
+"VES3"
+mat 7   7   7
+"VES4"
+mat 8   8   8
+"VES5"
+mat 9   9   9
+"ULB"
+mat 10  10  10
+"UAS"
+mat 11  11  11
+"UAHE"
+mat 12  12  12
+"UAR"
+mat 13  13  13
+"INF1"
+mat 14  14  14
+"INF2"
+mat 15  15  15
+"INF3"
+mat 16  16  16
+"MDF1"
+mat 17  17  17
+"MDF2"
+mat 18  18  18
+"MDF3"
+mat 19  19  19
+"OTF1"
+mat 20  20  20
+"OTF2"
+mat 21  21  21
+"OTF3"
+mat 22  22  22
+"LAR"
+mat 23  23  23
+"LAHE"
+mat 24  24  24
+"LABW"
+mat 25  25  25
+"LAS"
+mat 26  26  26
+"RRS1"
+mat 27  27  27
+"RRS2"
+mat 28  28  28
+"RRLB"
+mat 29  29  29
+"RSS1"
+mat 30  30  30
+"RSS2"
+mat 31  31  31
+"LLBE"
+
+!               start_mat       end_mat
+mat_d           1               1
+mat_d           2               2
+mat_d           3               3
+mat_d           4               4
+mat_d           5               5
+mat_d           6               6
+mat_d           7               7
+mat_d           8               8
+mat_d           9               9
+mat_d           10              10
+mat_d           11              11
+mat_d           12              12
+mat_d           13              13
+mat_d           14              14
+mat_d           15              15
+mat_d           16              16
+mat_d           17              17
+mat_d           18              18
+mat_d           19              19
+mat_d           20              20
+mat_d           21              21
+mat_d           22              22
+mat_d           23              23
+mat_d           24              24
+mat_d           25              25
+mat_d           26              26
+mat_d           27              27
+mat_d           28              28
+mat_d           29              29
+mat_d           30              30
+mat_d           31              31
+
+q_external  0 
+"SOURCE.EXTERNAL"
+
+! ==================================================================================================
+! --this part is core geometry
+GEOMETRY:
+!               type(0-ansys/ 1-rec/ 2-hex)
+mesh            0
+  
+
+!               is_bevel_edge
+type            T
+
+!               n_point         n_nodal     n_segment       n_zone   
+scale           273               490           3             64
+
+!               n_layer         n_plane     n_plane_source
+layer           38              14           14
+                
+
+!               layer_height (bottom-->top)          
+height          10*9.9 10.0 3*10.0 7.5 8.5 6.5 2*10.0 2*11 2*9 2*10 15.0 5.0 9.5 10*10 
+
+
+                      !--1- upper LBE layer ---!
+!               planar_index  material_to_zone(for every material zone)
+plane_mat       1             1 2 4 5 6 7 5*8 7*9 
+                               7*9 
+                               6*9 
+                               6*9 
+                               6*9 
+                               6*9 
+                               5*9 
+                               4*9 
+                               3*9 
+                               2*9 
+                               9
+!--2- upper ASSS layer ---!
+plane_mat       2            1 2 4 5 6 7 5*8 3*10  26 2*28  29 
+                                           3*10  26 2*28  29 
+                                           2*10  26 2*28  29 
+                                           3*10  26   28  29 
+                                           2*10  2*26   28  29 
+                                           2*10  2*26   28  29 
+                                           2*10    26   28  29 
+                                                 2*26   28  29 
+                                                      2*28  29 
+                                                        28  29 
+                                                            29 
+!--3- upper ASHE layer ---!
+plane_mat       3     1 2 4 5 6 7 5*8 3*11  26 2*28  29 
+                                    3*11  26 2*28  29
+                                    2*11  26 2*28  29
+                                    3*11  26   28  29
+                                    2*11  2*26   28  29 
+                                    2*11  2*26   28  29 
+                                    2*11    26   28  29 
+                                          2*26   28  29 
+                                               2*28  29 
+                                                 28  29 
+                                                     29 
+!--4- upper ASSR layer ---!
+plane_mat       4     1 2 4 5 6 7 5*8 3*12  26 2*28  29 
+                                    3*12  26 2*28  29 
+                                    2*12  26 2*28  29 
+                                    3*12  26   28  29 
+                                    2*12  2*26   28  29 
+                                    2*12  2*26   28  29 
+                                    2*12    26   28  29 
+                                          2*26   28  29 
+                                               2*28  29 
+                                                 28  29 
+                                                     29 
+!-5- upper target AFU 1 layer ---!
+plane_mat       5        1 2 4 5 6 7 5*8 13 16 19  26 2*28  29 
+                                       13 16 19  26 2*28  29 
+                                          13 16  26 2*28  29 
+                                       13 16 19  26   28  29 
+                                          13 16  2*26   28  29 
+                                          13 16  2*26   28  29 
+                                          16 19    26   28  29 
+                                                 2*26   28  29 
+                                                      2*28  29 
+                                                        28  29 
+                                                            29 
+!-6- upper target AFU 2 layer ---!
+plane_mat       6           1 2 4 5 6 7 5*8 14 17 20  26 2*28  29 
+                                          14 17 20  26 2*28  29 
+                                             14 17  26 2*28  29 
+                                          14 17 20  26   28  29 
+                                             14 17  2*26   28  29 
+                                             14 17  2*26   28  29 
+                                             17 20    26   28  29 
+                                                    2*26   28  29 
+                                                         2*28  29 
+                                                           28  29 
+                                                               29 
+!-7- lower target AFU 1 layer ---!
+plane_mat       7          2*3 4 5 6 7 5*8 14 17 20  26 2*28  29
+                                         14 17 20  26 2*28  29 
+                                            14 17  26 2*28  29 
+                                         14 17 20  26   28  29 
+                                            14 17  2*26   28  29
+                                            14 17  2*26   28  29
+                                            17 20    26   28  29
+                                                   2*26   28  29
+                                                        2*28  29
+                                                          28  29
+                                                              29 
+!-8-- lower target AFU2 layer ---
+plane_mat       8          2*3 4 5 6 7 5*8 15 18 21  26 2*28  29 
+                                         15 18 21  26 2*28  29 
+                                            15 18  26 2*28  29 
+                                         15 18 21  26   28  29 
+                                            15 18  2*26   28  29 
+                                            15 18  2*26   28  29 
+                                            18 21    26   28  29 
+                                                   2*26   28  29 
+                                                        2*28  29 
+                                                          28  29 
+                                                              29 
+!-9-- lower LSSR1 layer ---!
+plane_mat      9            2*3 4 5 6 7 5*8 3*22  26 2*28  29 
+                                          3*22  26 2*28  29 
+                                          2*22  26 2*28  29 
+                                          3*22  26   28  29 
+                                          2*22  2*26   28  29 
+                                          2*22  2*26   28  29 
+                                          2*22    26   28  29 
+                                                2*26   28  29 
+                                                     2*28  29 
+                                                       28  29 
+                                                           29 
+!--10- Lower LSSR2 layer ---!
+plane_mat       10          2*3 4 5 6 7 5*8 3*22  27 2*28  30 
+                                          3*22  27 2*28  30 
+                                          2*22  27 2*28  30 
+                                          3*22  27   28  30 
+                                          2*22  2*27   28  30 
+                                          2*22  2*27   28  30 
+                                          2*22    27   28  30 
+                                                2*27   28  30 
+                                                     2*28  30 
+                                                       28  30 
+                                                           30 
+!--11- Lower ASHE layer ---!
+plane_mat       11          2*3 4 5 6 7 5*8 3*23  27 2*28  30 
+                                          3*23  27 2*28  30 
+                                          2*23  27 2*28  30 
+                                          3*23  27   28  30 
+                                          2*23  2*27   28  30 
+                                          2*23  2*27   28  30 
+                                          2*23    27   28  30 
+                                                2*27   28  30 
+                                                     2*28  30 
+                                                       28  30 
+                                                           30 
+!-12-- Lower AUBW layer ---!
+plane_mat       12         2*3 4 5 6 7 5*8 3*24  27 2*28  30
+                                         3*24  27 2*28  30 
+                                         2*24  27 2*28  30 
+                                         3*24  27   28  30 
+                                         2*24  2*27   28  30
+                                         2*24  2*27   28  30
+                                         2*24    27   28  30
+                                               2*27   28  30
+                                                    2*28  30
+                                                      28  30
+                                                          30 
+!-13-- Lower ASSS layer ---!
+plane_mat       13         2*3 4 5 6 7 5*8 3*25  27 2*28  30
+                                         3*25  27 2*28  30 
+                                         2*25  27 2*28  30 
+                                         3*25  27   28  30 
+                                         2*25  2*27   28  30 
+                                         2*25  2*27   28  30 
+                                         2*25    27   28  30 
+                                               2*27   28  30 
+                                                    2*28  30 
+                                                      28  30 
+                                                          30 
+!-14-- Lower RLBE layer ---!
+plane_mat       14         2*3 4 5 6 7 5*8 7*31 
+                                           7*31 
+                                           6*31 
+                                           6*31 
+                                           6*31 
+                                           6*31 
+                                           5*31 
+                                           4*31 
+                                           3*31 
+                                           2*31 
+                                           31
+
+!               assign planar number to layer (bottom-->top)
+assign_mat    10*14 13 3*12 11 10 9 2*8 2*7 2*6 2*5 4 3 2 10*1
+
+!               planar_index  material_to_zone(for every material zone)
+plane_source    1             1  63*0
+plane_source    2             2  63*0
+plane_source    3             3  63*0
+plane_source    4             4  63*0
+plane_source    5             5  63*0
+plane_source    6             6  63*0
+plane_source    7             7  63*0
+plane_source    8             8  63*0
+plane_source    9             9  63*0
+plane_source    10            10 63*0
+plane_source    11            11 63*0
+plane_source    12            12 63*0
+plane_source    13            13 63*0
+plane_source    14            64*0
+
+!               assign planar number to layer (bottom-->top)
+assign_source  14*14 13 12 11 10 9 8 7 6 5 4 3 2 1 11*14
+
+!               boundary%bottom         boundary%top
+bc_axial        0                       0
+
+!               start_point   adjecent_point      final_point       boundary_condition(0 for void, 1 for reflector)
+bc_radial       96             96                   125                 0
+bc_radial       125            125                   1                  1
+bc_radial       1              1                    96                  1
+
+! ==================================================================================================
+! --this part is feedback control  
+FEEDBACK:
+!               is_inner        is_model        model_name (LRA)
+fdbk            T               F               'LRA'
+
+!               relax_TH        relax_CB
+relaxation      0.6             1.0
+
+!               tcoolin         is_search
+design          600             F
+
+flow  11*0. 3*6.52 0. 0. 0. 0. 
+      3*6.52 0. 0. 0. 0. 
+      2*6.52 0. 0. 0. 0. 
+      3*6.52 0. 0. 0.   
+      2*6.52 0. 0. 0. 0. 
+      2*6.52 0. 0. 0. 0. 
+      2*6.52 0. 0. 0.   
+      10*0         
+
+!               tmincoolout     tmaxcoolout     tmaxcladsurf    max_velocity    
+! search          633.0           743.0           703.0           8.0     
+
+!               gamma_frac
+gamma           0.0
+
+!               fq_lattice
+fq_lattice      64*1.00
+
+!               t_coolant       t_fuel
+criteria        1.0E-3          1.0E-3
+
+!               n_pellet        n_cladding  
+mesh_size       10              5
+                
+!               coolant_type  
+coolant         13 
+
+!               nTypGeomAssm    is_hexagonal
+geom_info       1               T
+
+!               type_ID     numpin      nfuelpin    pitch       rod         cladth      bond        hole
+assembly        1           61          61         1.7916       0.58      0.050       0.01      0.0                 ! WHOLE fuel assembly
+
+!               type_ID     clad_type   gap_type    fuel_type   
+property_type   1           23          4           1
+
+!               assembly_to_zone(for every materil zone)
+th_configure        11*0 3*1  4*0
+                         3*1  4*0              
+                         2*1  4*0              
+                         3*1  3*0              
+                         2*1  4*0              
+                         2*1  4*0              
+                         2*1  3*0              
+                         4*0                   
+                         3*0                   
+                         2*0                   
+                         0                     
+! =====================================(END)========================================================
+END:

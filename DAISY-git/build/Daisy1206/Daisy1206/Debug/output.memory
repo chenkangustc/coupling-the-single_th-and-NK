@@ -1,0 +1,81 @@
+ (Begin)
+ ___________________________________________________________________________________
+ Case name is: [CIADS]
+
+
+ _______________________________________________________
+ memory size for geometry:
+     
+ memory for this part is:   6.8535E-02 MB
+     
+ mesh  --  3.7384E-02 MB  54.547%
+ geom  --  8.6823E-03 MB  12.668%
+ bound --  2.2469E-02 MB  32.784%
+     
+ _______________________________________________________
+ memory size for material:
+     
+ memory for this part is:   4.0455E+01 MB
+     
+ xsec                --  2.7785E+01 MB  68.682%
+ kinetics parameter  --  8.7943E+00 MB  21.738%
+ external source     --  3.8757E+00 MB   9.580%
+     
+ _______________________________________________________
+ memory size for quadrature & sweeping:
+     
+ memory for this part is:   1.0783E+00 MB
+     
+ quad   --  8.0914E-01 MB  75.038%
+ sweep  --  2.6917E-01 MB  24.962%
+     
+ _______________________________________________________
+ memory size for iteration parameter:
+     
+ memory for this part is:   7.7682E+02 MB
+     
+ iter_q        --  1.8553E+02 MB  23.883%
+ iter_flux     --  5.8928E+02 MB  75.858%
+ flux_scat     --  0.0000E+00 MB   0.258%
+ iter_adjoint  --  2.0080E+00 MB   0.000%
+     
+ _______________________________________________________
+ memory size for result container:
+     
+ memory for this part is:   2.5272E+02 MB
+     
+ flux_forward       --  2.4889E+02 MB  98.482%
+ flux_adjoint       --  3.4094E+00 MB   1.349%
+ dist_flux          --  1.4206E-01 MB   0.056%
+ dist_power         --  1.4206E-01 MB   0.056%
+ dist_fission_rate  --  1.4206E-01 MB   0.056%
+ dist_dnps     --  0.0000E+00 MB   0.000%
+     
+ _______________________________________________________
+ memory size for coefficient in iteration:
+     
+ memory for this part is:   7.3644E+02 MB
+     
+ coeff_source    --  0.0000E+00 MB   0.000%
+ coeff_surface   --  2.2502E+02 MB  30.556%
+ coeff_nodal     --  5.1141E+02 MB  69.444%
+     
+ _______________________________________________________
+ _______________________________________________________
+ memory SUMMARY:
+     
+ total memory for this case is:   1.8076E+03 MB
+     
+ geometry       --  6.8535E-02 MB   0.004%
+ material       --  4.0455E+01 MB   2.238%
+ quad & sweep   --  1.0783E+00 MB   0.060%
+ iteration      --  7.7682E+02 MB  42.976%
+ container      --  2.5272E+02 MB  13.981%
+ coefficient    --  7.3644E+02 MB  40.742%
+ transient      --  0.0000E+00 MB   0.000%
+     
+
+
+ ___________________________________________________________________________________
+ (End)
+
